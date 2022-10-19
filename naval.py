@@ -71,7 +71,7 @@ def makef(plateau):
       aff(plateau)
       count += 1
 
-dim(input("Coté du plateau de jeu: "))
+dim(5)
 remp(plateauj)
 remp(plateauo)
 makeo(plateauo)
