@@ -1,14 +1,15 @@
 from random import *
 
-alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O']
+alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 plateauj = []
 plateauo = []
+#Définition des dimension du tableau
 def dim(dim):
   for i in range(int(dim)):
     plateauj.append([])
     plateauo.append([])
 
-#création des cases
+#Remplisage des colones
 def remp(plateau):
   count = 0
   for tab in range(len(plateau)):
@@ -17,7 +18,7 @@ def remp(plateau):
    count += 1
 
 
-#Modifier la valeur d'une case selon "Lettre-nombre"
+#Modifier la valeur d'une case selon "x-x"
 def placement(case, plateau):
   case.split("-")
   num = int(case[2]) - 1
@@ -29,21 +30,23 @@ def placement(case, plateau):
     return -1
 
 
-#Afficher le plateau
+#Afficher un plateau
 def aff(plateau):
-  count = 0
-  print("     ", end="")
+  #detection de l'utilisateur
   if plateau == plateauo:
     user = "ordinateur"
   else:
     user = "joueur"
 
-  print(f"\n    [plateau {user}]\n     ", end="")
+  #Affichage des lettres
+  count = 0
+  print(f"     \n    [plateau {user}]\n     ", end="")
   for i in plateauj:
     print(f"{alpha[count]}    ", end="")
     count += 1
   print("\n")
 
+  #Affichage des nombres et des cases
   count = 1
   for el in plateau:
     print(f"{count} | ", end="")
@@ -52,7 +55,7 @@ def aff(plateau):
     print("|\n")
     count += 1
 
-
+#Placement automatique des bateaux
 def makeo(plateau):
   count = 0
   while count < 3:
@@ -62,7 +65,7 @@ def makeo(plateau):
     if placement(case, plateau) == 0:
       count += 1
   
-
+#Placement manuel des bateaux
 def makef(plateau):
   print("Placez 3 bateaux")
   count = 0
@@ -71,7 +74,8 @@ def makef(plateau):
       aff(plateau)
       count += 1
 
-dim(5)
+#Début du programme
+dim(input("Coté des plateaux: "))
 remp(plateauj)
 remp(plateauo)
 makeo(plateauo)
