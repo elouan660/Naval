@@ -34,8 +34,7 @@ def placement(case, plateau):
       return 1
     else:
       return 0
-
-  except BaseException:
+  except ValueError:
     return -1
 
 
