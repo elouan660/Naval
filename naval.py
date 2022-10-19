@@ -1,5 +1,5 @@
 from random import *
-print('test')
+
 alpha = ['A', 'B', 'C', 'D', 'E']
 plateauj = [[], [], [], [], []]
 plateauo = [[], [], [], [], []]
