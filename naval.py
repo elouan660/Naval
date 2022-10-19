@@ -1,10 +1,13 @@
 from random import *
 
-alpha = ['A', 'B', 'C', 'D', 'E']
-plateauj = [[], [], [], [], []]
-plateauo = [[], [], [], [], []]
-#Affichage des dimensions du plateau
-print(f"Dimensions du plateau: {len(plateauj)}x{len(plateauj)}")
+alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O']
+plateauj = []
+plateauo = []
+def dim(dim):
+  for i in range(int(dim)):
+    plateauj.append([])
+    plateauo.append([])
+
 #création des cases
 def remp(plateau):
   count = 0
@@ -28,10 +31,19 @@ def placement(case, plateau):
 
 #Afficher le plateau
 def aff(plateau):
+  count = 0
+  print("     ", end="")
   if plateau == plateauo:
-    print("\n     A    B    C    D    E\n     [plateau ordinateur]\n")
+    user = "ordinateur"
   else:
-    print("     A    B    C    D    E\n       [plateau joueur]\n")
+    user = "joueur"
+
+  print(f"\n    [plateau {user}]\n     ", end="")
+  for i in plateauj:
+    print(f"{alpha[count]}    ", end="")
+    count += 1
+  print("\n")
+
   count = 1
   for el in plateau:
     print(f"{count} | ", end="")
@@ -59,7 +71,7 @@ def makef(plateau):
       aff(plateau)
       count += 1
 
-
+dim(input("Coté du plateau de jeu: "))
 remp(plateauj)
 remp(plateauo)
 makeo(plateauo)
