@@ -1,6 +1,7 @@
 #À résoudre: 
 # x>9 en num est mal pris en charge
 # Faire varier la quantité de bateaux
+# Prise en charge des mauvaises saisies pour "dim"
 from random import *
 
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -8,6 +9,7 @@ plateauj = []
 plateauo = []
 #Définition des dimension du tableau
 def dim(dim):
+  count = 0
   for i in range(int(dim)):
     plateauj.append([])
     plateauo.append([])
@@ -23,13 +25,17 @@ def remp(plateau):
 
 #Modifier la valeur d'une case selon "x-x"
 def placement(case, plateau):
-  case.split("-")
-  num = int(case[2]) - 1
-  lettre = alpha.index(case[0].upper())
-  if plateau[int(num)][int(lettre)] == "~~~":
-    plateau[int(num)][int(lettre)] = "[ ]"
-    return 0
-  else:
+  try:
+    case.split("-")
+    num = int(case[2]) - 1
+    lettre = alpha.index(case[0].upper())
+    if plateau[int(num)][int(lettre)] == "~~~":
+      plateau[int(num)][int(lettre)] = "[ ]"
+      return 1
+    else:
+      return 0
+
+  except BaseException:
     return -1
 
 
@@ -58,7 +64,7 @@ def aff(plateau):
     print("|\n")
     count += 1
 
-#Placement automatique des bateaux
+#Placement automatique des bateaux (dépend de "placement()")
 def makeo(plateau):
   count = 0
   while count < 3:
@@ -68,14 +74,21 @@ def makeo(plateau):
     if placement(case, plateau) == 0:
       count += 1
   
-#Placement manuel des bateaux
+#Placement manuel des bateaux (dépend de "placement()")
 def makef(plateau):
   print("Placez 3 bateaux")
   count = 0
   while count < 3:
-    if placement(input("case: "), plateau) == 0:
+    retourplacement = placement(input("case: "), plateau)
+    if retourplacement == 1:
       aff(plateau)
       count += 1
+    elif retourplacement == 0:
+      print("Vous ne pouvez pas placer 2 bateaux sur la même case")
+    else:
+      print("saisie incorrecte")
+
+    
 
 #Début du programme
 dim(input("Coté des plateaux: "))
