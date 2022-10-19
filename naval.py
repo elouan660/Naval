@@ -1,3 +1,6 @@
+#À résoudre: 
+# x>9 en num est mal pris en charge
+# Faire varier la quantité de bateaux
 from random import *
 
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
