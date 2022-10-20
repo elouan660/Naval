@@ -10,9 +10,13 @@ plateauo = []
 #Définition des dimension du tableau
 def dim(dim):
   count = 0
-  for i in range(int(dim)):
-    plateauj.append([])
-    plateauo.append([])
+  try:
+    for i in range(int(dim)):
+      plateauj.append([])
+      plateauo.append([])
+    return 1
+  except ValueError:
+    return -1
 
 #Remplisage des colones
 def remp(plateau):
@@ -70,7 +74,7 @@ def makeo(plateau):
     lettre = randint(0,4)
     numo = randint(0,4)
     case = f"{alpha[lettre]}-{str(numo)}"
-    if placement(case, plateau) == 0:
+    if placement(case, plateau) == 1:
       count += 1
   
 #Placement manuel des bateaux (dépend de "placement()")
@@ -89,8 +93,14 @@ def makef(plateau):
 
     
 
-#Début du programme
-dim(input("Coté des plateaux: "))
+#Saisie utilisateur dans "dim()"
+count = 0
+while count < 1:
+  if dim(input("Coté des plateaux: ")) == 1:
+    count += 1
+  else:
+    print("saisie incorrecte")
+
 remp(plateauj)
 remp(plateauo)
 makeo(plateauo)
