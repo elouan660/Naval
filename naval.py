@@ -1,5 +1,4 @@
 #Affichage moche à résoudre
-
 from random import *
 import os as os
 from time import *
