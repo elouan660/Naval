@@ -70,14 +70,18 @@ def aff(plateau):
     print("|\n")
     count += 1
 
+#générer une case aléatoirement
+def caseo():
+  lettre = randint(0,len(plateauo)-1)
+  numo = randint(0,len(plateauo)-1)
+  case = f"{alpha[lettre]}-{str(numo)}"
+  return case
+
 #Placement automatique des bateaux (dépend de "placement()")
 def makeo(plateau):
   count = 0
   while count < nbrbateau:
-    lettre = randint(0,4)
-    numo = randint(0,4)
-    case = f"{alpha[lettre]}-{str(numo)}"
-    if placement(case, plateau) == 1:
+    if placement(caseo(), plateau) == 1:
       count += 1
   
 #Placement manuel des bateaux (dépend de "placement()")
@@ -94,7 +98,7 @@ def makef(plateau):
     else:
       print("saisie incorrecte")
 
-def boom(case, plateau0, plateau1):
+def boom(case, plateau0, plateau1, nbrbat):
   case.split("-")
   num = int(case[2]) - 1
   lettre = alpha.index(case[0].upper())
@@ -105,11 +109,11 @@ def boom(case, plateau0, plateau1):
     print("Manqué!")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
+    nbrbat -= 1
     aff(plateau1)
     print("Coulé!")
   else:
     print("?")
-
 
     
   
@@ -129,11 +133,24 @@ while count != 1:
   else:
     print("saisie incorrecte")
 
+nbrbateauj = nbrbateau #nombre de bateaux du joueur
+nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
+partie = 1 #indique que la partie est en cour
+
 remp(plateauj)
 remp(plateaujo)
 remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
+while partie == 1:
+  boom(input("case: "), plateauo, plateaujo, nbrbateauo)
+  if nbrbateauo == 0:
+    partie -= 1
+  boom(caseo(), plateauj, plateauoj, nbrbateauj)
+  if nbrbateauj == 0:
+    partie -= 1
+  #boom(, plateau0, plateau1, nbrbat)
 
-boom(input("case: "), plateauo, plateaujo)
+
+
