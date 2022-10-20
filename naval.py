@@ -55,7 +55,7 @@ def aff(plateau):
 
   #Affichage des lettres
   count = 0
-  print(f"     \n    [plateau {user}]\n     ", end="")
+  print(f"     \n    [vue du plateau {user}]\n     ", end="")
   for i in plateauj:
     print(f"{alpha[count]}    ", end="")
     count += 1
@@ -89,7 +89,7 @@ def makef(plateau):
   print(f"Placez {nbrbateau} bateaux")
   count = 0
   while count < nbrbateau:
-    retourplacement = placement(input("case: "), plateau)
+    retourplacement = placement(input("Case où placer un bateau: "), plateau)
     if retourplacement == 1:
       aff(plateau)
       count += 1
@@ -102,18 +102,24 @@ def boom(case, plateau0, plateau1, nbrbat):
   case.split("-")
   num = int(case[2]) - 1
   lettre = alpha.index(case[0].upper())
+  if plateau0 == plateauj:
+    user = "[ordinateur]"
+  else:
+    user = "[joueur]"
   if plateau0[int(num)][int(lettre)] == "~~~":
     plateau1[int(num)][int(lettre)] = "~x~"
     plateau0[int(num)][int(lettre)] = "~x~"
     aff(plateau1)
-    print("Manqué!")
+    print(f"Manqué! (par {user})")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
-    nbrbat -= 1
+    nbrbat = nbrbat - 1
     aff(plateau1)
-    print("Coulé!")
+    print(f"Coulé! (par{user})")
   else:
-    print("?")
+    aff(plateau1)
+    print(f"Je suis débile! ({user})")
+  return nbrbat
 
     
   
@@ -143,14 +149,19 @@ remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
-while partie == 1:
-  boom(input("case: "), plateauo, plateaujo, nbrbateauo)
-  if nbrbateauo == 0:
-    partie -= 1
-  boom(caseo(), plateauj, plateauoj, nbrbateauj)
-  if nbrbateauj == 0:
-    partie -= 1
-  #boom(, plateau0, plateau1, nbrbat)
+while True:
+  nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
+  print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
+  if nbrbateauo <= 0:
+    winner = "le Joueur"
+    break
+  nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj)
+  print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
+  if nbrbateauj <= 0:
+    winner = "l'Ordinateur"
+    break
+
+print(f"\nEt le gagnant est : {winner}")
 
 
 
