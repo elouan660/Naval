@@ -119,14 +119,10 @@ def boom(case, plateau0, plateau1, nbrbat):
   if plateau0[int(num)][int(lettre)] == "~~~":
     plateau1[int(num)][int(lettre)] = "~x~"
     plateau0[int(num)][int(lettre)] = "~x~"
-    if user == "[ordinateur]":
-      aff(plateau0)
     print(f"Manqué! (par {user})")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
     nbrbat = nbrbat - 1
-    if user == "[ordinateur]":
-      aff(plateau0)
     print(f"Coulé! (par{user})")
   else:
     if user == "[ordinateur]":
@@ -167,6 +163,7 @@ while True:
     winner = "le Joueur"
     break
   nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj)
+  aff(plateauoj)
   print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
