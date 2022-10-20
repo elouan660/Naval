@@ -10,12 +10,15 @@ nbrbateau = 0
 def dim(dim):
   count = 0
   try:
-    for i in range(int(dim)):
-      plateauj.append([])
-      plateauo.append([])
-      plateaujo.append([])
-      plateauoj.append([])
-    return int(dim)
+    if int(dim) >= 3 and int(dim) <= 25:
+      for i in range(int(dim)):
+        plateauj.append([])
+        plateauo.append([])
+        plateaujo.append([])
+        plateauoj.append([])
+      return int(dim)
+    else:
+      return 1
   except ValueError:
     return -1
 
