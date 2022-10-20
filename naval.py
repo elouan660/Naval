@@ -99,6 +99,7 @@ def makef(plateau):
     else:
       print("saisie incorrecte")
 
+#Tirer sur une case (case en question, plateau sur lequel tirer, plateau sur lequel afficher, variable a modifier)
 def boom(case, plateau0, plateau1, nbrbat):
   case.split("-")
   num = int(case[2]) - 1
