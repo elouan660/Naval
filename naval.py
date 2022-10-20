@@ -132,7 +132,7 @@ while count != 1:
     count += 1
     nbrbateau = (retourdim//2)+1
   elif retourdim > 0:
-    print("Veulliez entrer un nombre compris entre 3 et 26")
+    print("Veulliez entrer un nombre compris entre 3 et 25")
   else:
     print("saisie incorrecte")
 
