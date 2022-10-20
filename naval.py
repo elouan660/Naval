@@ -1,4 +1,7 @@
+#Affichage moche à résoudre
 from random import *
+import os as os
+from time import *
 
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 plateauj = [] #plateau joueur
@@ -95,6 +98,7 @@ def makef(plateau):
   while count < nbrbateau:
     retourplacement = placement(input("Case où placer un bateau: "), plateau)
     if retourplacement == 1:
+      os.system('cls' if os.name == 'nt' else 'clear')
       aff(plateau)
       count += 1
     elif retourplacement == 0:
@@ -150,6 +154,8 @@ remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
 while True:
+  os.system('cls' if os.name == 'nt' else 'clear')
+  aff(plateaujo)
   nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
@@ -160,6 +166,7 @@ while True:
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
     break
+  input("Tapez entrer pour continuer: ")
 
 print(f"\nEt le gagnant est : {winner}")
 
