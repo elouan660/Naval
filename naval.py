@@ -1,12 +1,13 @@
 #À résoudre: 
 # x>9 en num est mal pris en charge
-# Faire varier la quantité de bateaux
-# Prise en charge des mauvaises saisies pour "dim"
 from random import *
 
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-plateauj = []
-plateauo = []
+plateauj = [] #plateau joueur
+plateaujo = [] #plateau ordinateur vu par le joueur
+plateauo = [] #plateau ordinateur
+plateauoj = [] #plateau joueur vu par l'ordinateur
+nbrbateau = 0
 #Définition des dimension du tableau
 def dim(dim):
   count = 0
@@ -14,7 +15,9 @@ def dim(dim):
     for i in range(int(dim)):
       plateauj.append([])
       plateauo.append([])
-    return 1
+      plateaujo.append([])
+      plateauoj.append([])
+    return int(dim)
   except ValueError:
     return -1
 
@@ -45,9 +48,9 @@ def placement(case, plateau):
 #Afficher un plateau
 def aff(plateau):
   #detection de l'utilisateur
-  if plateau == plateauo:
+  if plateau == plateauo or plateau == plateaujo:
     user = "ordinateur"
-  else:
+  elif plateau == plateauj or plateau == plateauoj:
     user = "joueur"
 
   #Affichage des lettres
@@ -70,7 +73,7 @@ def aff(plateau):
 #Placement automatique des bateaux (dépend de "placement()")
 def makeo(plateau):
   count = 0
-  while count < 3:
+  while count < nbrbateau:
     lettre = randint(0,4)
     numo = randint(0,4)
     case = f"{alpha[lettre]}-{str(numo)}"
@@ -79,9 +82,9 @@ def makeo(plateau):
   
 #Placement manuel des bateaux (dépend de "placement()")
 def makef(plateau):
-  print("Placez 3 bateaux")
+  print(f"Placez {nbrbateau} bateaux")
   count = 0
-  while count < 3:
+  while count < nbrbateau:
     retourplacement = placement(input("case: "), plateau)
     if retourplacement == 1:
       aff(plateau)
@@ -91,18 +94,46 @@ def makef(plateau):
     else:
       print("saisie incorrecte")
 
+def boom(case, plateau0, plateau1):
+  case.split("-")
+  num = int(case[2]) - 1
+  lettre = alpha.index(case[0].upper())
+  if plateau0[int(num)][int(lettre)] == "~~~":
+    plateau1[int(num)][int(lettre)] = "~x~"
+    plateau0[int(num)][int(lettre)] = "~x~"
+    aff(plateau1)
+    print("Manqué!")
+  elif plateau0[int(num)][int(lettre)] == "[ ]":
+    plateau1[int(num)][int(lettre)] = "[X]"
+    aff(plateau1)
+    print("Coulé!")
+  else:
+    print("?")
+
+
+    
+  
+
     
 
 #Saisie utilisateur dans "dim()"
+
 count = 0
-while count < 1:
-  if dim(input("Coté des plateaux: ")) == 1:
+while count != 1:
+  retourdim = dim(input("Coté des plateaux: "))
+  if retourdim >= 3 and retourdim <= 26:
     count += 1
+    nbrbateau = (retourdim//2)+1
+  elif retourdim > 0:
+    print("Veulliez entrer un nombre compris entre 3 et 26")
   else:
     print("saisie incorrecte")
 
 remp(plateauj)
+remp(plateaujo)
 remp(plateauo)
+remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
-aff(plateauo)
+
+boom(input("case: "), plateauo, plateaujo)
