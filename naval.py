@@ -131,7 +131,7 @@ def boom(case, plateau0, plateau1, nbrbat):
 count = 0
 while count != 1:
   retourdim = dim(input("Coté des plateaux: "))
-  if retourdim >= 3 and retourdim <= 25:
+  if retourdim > 1:
     count += 1
     nbrbateau = (retourdim//2)+1
   elif retourdim > 0:
