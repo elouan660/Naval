@@ -1,5 +1,3 @@
-#À résoudre: 
-# x>9 en num est mal pris en charge
 from random import *
 
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -55,7 +53,7 @@ def aff(plateau):
 
   #Affichage des lettres
   count = 0
-  print(f"     \n    [vue du plateau {user}]\n     ", end="")
+  print(f"     \n    [vue du plateau {user}]\n      ", end="")
   for i in plateauj:
     print(f"{alpha[count]}    ", end="")
     count += 1
@@ -64,7 +62,10 @@ def aff(plateau):
   #Affichage des nombres et des cases
   count = 1
   for el in plateau:
-    print(f"{count} | ", end="")
+    if count <= 9:
+      print(f"{count}  | ", end="")
+    else:
+      print(f"{count} | ", end="")
     for el1 in el:
       print(f"{el1}  ", end="")
     print("|\n")
@@ -121,13 +122,8 @@ def boom(case, plateau0, plateau1, nbrbat):
     print(f"Je suis débile! ({user})")
   return nbrbat
 
-    
-  
-
-    
 
 #Saisie utilisateur dans "dim()"
-
 count = 0
 while count != 1:
   retourdim = dim(input("Coté des plateaux: "))
