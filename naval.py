@@ -95,6 +95,7 @@ def makeo(plateau):
 def makef(plateau):
   print(f"Placez {nbrbateau} bateaux")
   count = 0
+  aff(plateau)
   while count < nbrbateau:
     retourplacement = placement(input("Case où placer un bateau: "), plateau)
     if retourplacement == 1:
@@ -118,15 +119,18 @@ def boom(case, plateau0, plateau1, nbrbat):
   if plateau0[int(num)][int(lettre)] == "~~~":
     plateau1[int(num)][int(lettre)] = "~x~"
     plateau0[int(num)][int(lettre)] = "~x~"
-    aff(plateau1)
+    if user == "[ordinateur]":
+      aff(plateau0)
     print(f"Manqué! (par {user})")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
     nbrbat = nbrbat - 1
-    aff(plateau1)
+    if user == "[ordinateur]":
+      aff(plateau0)
     print(f"Coulé! (par{user})")
   else:
-    aff(plateau1)
+    if user == "[ordinateur]":
+      aff(plateau0)
     print(f"Je suis débile! ({user})")
   return nbrbat
 
@@ -157,6 +161,7 @@ while True:
   os.system('cls' if os.name == 'nt' else 'clear')
   aff(plateaujo)
   nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
+  aff(plateaujo)
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
     winner = "le Joueur"
