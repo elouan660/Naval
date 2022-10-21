@@ -3,7 +3,7 @@ from random import *
 import os as os
 from time import *
 
-alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'α','β','γ']
 plateauj = [] #plateau joueur
 plateaujo = [] #plateau ordinateur vu par le joueur
 plateauo = [] #plateau ordinateur
@@ -13,7 +13,7 @@ nbrbateau = 0
 def dim(dim):
   count = 0
   try:
-    if int(dim) >= 3 and int(dim) <= 25:
+    if int(dim) >= 3 and int(dim) <= len(alpha):
       for i in range(int(dim)):
         plateauj.append([])
         plateauo.append([])
