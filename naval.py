@@ -59,7 +59,7 @@ def aff(plateau):
 
   #Affichage des lettres
   count = 0
-  print(f"     \n    [vue du plateau {user}]\n      ", end="")
+  print(f"         [vue du plateau {user}]\n      ", end="")
   for i in plateauj:
     print(f"{alpha[count]}    ", end="")
     count += 1
@@ -119,15 +119,15 @@ def boom(case, plateau0, plateau1, nbrbat):
   if plateau0[int(num)][int(lettre)] == "~~~":
     plateau1[int(num)][int(lettre)] = "~x~"
     plateau0[int(num)][int(lettre)] = "~x~"
-    print(f"Manqué! (par {user})")
+    print(f"\nManqué! (par {user})")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
     nbrbat = nbrbat - 1
-    print(f"Coulé! (par{user})")
+    print(f"\nCoulé! (par{user})")
   else:
     if user == "[ordinateur]":
       aff(plateau0)
-    print(f"Je suis débile! ({user})")
+    print(f"\nJe suis débile! ({user})")
   return nbrbat
 
 
@@ -153,21 +153,20 @@ remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
-while True:
+while partie == 1:
   os.system('cls' if os.name == 'nt' else 'clear')
-  aff(plateaujo)
   nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
   aff(plateaujo)
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
     winner = "le Joueur"
-    break
+    partie = 0
   nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj)
   aff(plateauoj)
   print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
-    break
+    partie = 0
   input("Tapez entrer pour continuer: ")
 
 print(f"\nEt le gagnant est : {winner}")
