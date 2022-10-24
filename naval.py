@@ -59,7 +59,7 @@ def aff(plateau):
 
   #Affichage des lettres
   count = 0
-  print(f"         [vue du plateau {user}]\n      ", end="")
+  print(f"  [vue du plateau {user}]\n      ", end="")
   for i in plateauj:
     print(f"{alpha[count]}    ", end="")
     count += 1
