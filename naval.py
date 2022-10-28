@@ -37,7 +37,7 @@ def remp(plateau):
 #Modifier la valeur d'une case selon "x-x"
 def placement(case, plateau):
   try:
-    case.split("-")
+    case.split('-')
     num = int(case[2]) - 1
     lettre = alpha.index(case[0].upper())
     if plateau[int(num)][int(lettre)] == "~~~":
@@ -45,7 +45,7 @@ def placement(case, plateau):
       return 1
     else:
       return 0
-  except ValueError:
+  except BaseException:
     return -1
 
 
@@ -139,13 +139,13 @@ while count != 1:
     count += 1
     nbrbateau = (retourdim//2)+1
   elif retourdim > 0:
-    print("Veulliez entrer un nombre compris entre 3 et 25")
+    print(f"Veulliez entrer un nombre compris entre 3 et {len(alpha)+1}")
   else:
     print("saisie incorrecte")
 
 nbrbateauj = nbrbateau #nombre de bateaux du joueur
 nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
-partie = 1 #indique que la partie est en cour
+partie = True #indique que la partie est en cour
 
 remp(plateauj)
 remp(plateaujo)
@@ -153,23 +153,20 @@ remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
-while partie == 1:
+while partie:
   os.system('cls' if os.name == 'nt' else 'clear')
   nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
   aff(plateaujo)
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
     winner = "le Joueur"
-    partie = 0
+    partie = False
   nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj)
-  aff(plateauoj)
+  aff(plateauj)
   print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
-    partie = 0
+    partie = False
   input("Tapez entrer pour continuer: ")
 
 print(f"\nEt le gagnant est : {winner}")
-
-
-
