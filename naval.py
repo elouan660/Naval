@@ -3,7 +3,7 @@ from random import *
 import os as os
 from time import *
 
-alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'α','β','γ']
+alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 plateauj = [] #plateau joueur
 plateaujo = [] #plateau ordinateur vu par le joueur
 plateauo = [] #plateau ordinateur
@@ -32,6 +32,10 @@ def remp(plateau):
    for el in range(len(plateau)):
      plateau[count].append("~~~")
    count += 1
+
+def isnear(case0, case1):
+
+
 
 
 #Modifier la valeur d'une case selon "x-x"
