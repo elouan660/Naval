@@ -33,7 +33,13 @@ def remp(plateau):
      plateau[count].append("~~~")
    count += 1
 
-def isnear(case0, case1):
+def arenear(case0, case1):
+  case0.split('-')
+  num0 = int(case0[2]) - 1
+  lettre0 = alpha.index(case0[0].upper())
+  case1.split('-')
+  num1 = int(case1[2]) - 1
+  lettre1 = alpha.index(case1[0].upper())
 
 
 
