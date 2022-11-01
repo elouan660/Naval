@@ -132,11 +132,12 @@ def boom(case, plateau0, plateau1, nbrbat):
     print(f"\nManqué! (par {user})")
   elif plateau0[int(num)][int(lettre)] == "[ ]":
     plateau1[int(num)][int(lettre)] = "[X]"
+    plateau0[int(num)][int(lettre)] = "[x]"
     nbrbat -= 1
     print(f"\nCoulé! (par{user})")
   else:
-    if user == "[ordinateur]":
-      aff(plateau0)
+    """if user == "[ordinateur]":
+      aff(plateau0)"""
     print(f"\nJe suis débile! ({user})")
   return nbrbat
 
