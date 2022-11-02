@@ -33,7 +33,7 @@ def remp(plateau):
      plateau[count].append("~~~")
    count += 1
 
-#test d'une fonction permettant de vérifier si deux cases sont proches
+#test d'une fonction permettant de vérifier si deux cases sont proches(non fonctionnel)
 """
 def arenear(case0, case1):
   case0.split('-')
