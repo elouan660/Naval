@@ -33,6 +33,8 @@ def remp(plateau):
      plateau[count].append("~~~")
    count += 1
 
+#test d'une fonction permettant de vérifier si deux cases sont proches
+"""
 def arenear(case0, case1):
   case0.split('-')
   num0 = int(case0[2]) - 1
@@ -40,9 +42,7 @@ def arenear(case0, case1):
   case1.split('-')
   num1 = int(case1[2]) - 1
   lettre1 = alpha.index(case1[0].upper())
-
-
-
+"""
 
 #Modifier la valeur d'une case selon "x-x"
 def placement(case, plateau):
@@ -117,7 +117,7 @@ def makef(plateau):
     else:
       print("saisie incorrecte")
 
-#Tirer sur une case (case en question, plateau sur lequel tirer, plateau sur lequel afficher, variable a modifier)
+#Tirer sur une case (case en question, plateau sur lequel tirer, plateau sur lequel afficher, variable à baisser en cas de touche)
 def boom(case, plateau0, plateau1, nbrbat):
   case.split("-")
   num = int(case[2]) - 1
@@ -136,13 +136,11 @@ def boom(case, plateau0, plateau1, nbrbat):
     nbrbat -= 1
     print(f"\nCoulé! (par{user})")
   else:
-    """if user == "[ordinateur]":
-      aff(plateau0)"""
     print(f"\nJe suis débile! ({user})")
   return nbrbat
 
 
-#Saisie utilisateur dans "dim()"
+#Saisie utilisateur dans "dim()", permettant de choisir les dimensions du plateau de jeu
 count = 0
 while count != 1:
   retourdim = dim(input("Coté des plateaux: "))
@@ -158,12 +156,15 @@ nbrbateauj = nbrbateau #nombre de bateaux du joueur
 nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
 partie = True #indique que la partie est en cour
 
+#Composition des plateaux
 remp(plateauj)
 remp(plateaujo)
 remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
 makef(plateauj)
+
+#Lancement et déroulement de la partie
 while partie:
   os.system('cls' if os.name == 'nt' else 'clear')
   nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
