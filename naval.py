@@ -77,12 +77,13 @@ def dbplacement(case0, case1, plateau):
       case1.split('-')
       num1 = int(case1[2]) - 1
       lettre1 = alpha.index(case1[0].upper())
-      if plateau[int(num1)][int(lettre1)] == "~~~":
-        return 1
-        if plateau[int(num0)][int(lettre0)] == "~~~":
+      if plateau[int(num0)][int(lettre0)] == "~~~":
+        if plateau[int(num1)][int(lettre1)] == "~~~":
           plateau[int(num0)][int(lettre0)] = "[ ]"
           plateau[int(num1)][int(lettre1)] = "[ ]"
           return 2
+        else:
+          return 1
       else:
         return 0
     else:
@@ -153,8 +154,8 @@ def makef(plateau):
       print("saisie incorrecte")
   count = 0
   while count < 1:
-    retourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau: "),input("Case où placer la 2/2 part d'un bateau: "), plateau)
-    if retourplacement == 2:
+    dbretourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau: "),input("Case où placer la 2/2 part d'un bateau: "), plateau)
+    if dbretourplacement == 2:
       clear()
       aff(plateau)
       count += 1
