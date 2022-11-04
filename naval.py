@@ -81,13 +81,13 @@ def dbplacement(case0, case1, plateau):
         if plateau[int(num1)][int(lettre1)] == "~~~":
           plateau[int(num0)][int(lettre0)] = "[ ]"
           plateau[int(num1)][int(lettre1)] = "[ ]"
-          return 2
+          return 2 #Si tout est bon
         else:
-          return 1
+          return 0 #Si une ou plusieurs cases sont déja occupées
       else:
         return 0
     else:
-      return 0
+      return 1
   except BaseException:
     return -1
 
@@ -142,6 +142,7 @@ def makef(plateau):
   print(f"Placez {nbrbateau} bateaux")
   count = 0
   aff(plateau)
+  #placement des baeaux de taille 1
   while count < nbrbateau-1:
     retourplacement = placement(input("Case où placer un bateau de taille 1: "), plateau)
     if retourplacement == 1:
@@ -153,14 +154,17 @@ def makef(plateau):
     else:
       print("saisie incorrecte")
   count = 0
+  #placement des bateaux de taille 2
   while count < 1:
-    dbretourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau: "),input("Case où placer la 2/2 part d'un bateau: "), plateau)
+    dbretourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau de taille 2: "),input("Case où placer la 2/2 part d'un bateau de taille 2: "), plateau)
     if dbretourplacement == 2:
       clear()
       aff(plateau)
       count += 1
-    elif retourplacement == 0:
+    elif dbretourplacement == 0:
       print("Vous ne pouvez pas placer 2 bateaux sur la même case")
+    elif dbretourplacement == 1:
+      print("Les cases ne sont pas à proximité")
     else:
       print("saisie incorrecte")
   
