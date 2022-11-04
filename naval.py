@@ -1,4 +1,3 @@
-#Affichage moche à résoudre
 from random import *
 import os as os
 from time import *
@@ -25,6 +24,10 @@ def dim(dim):
   except ValueError:
     return -1
 
+#Nettoyage de l'affichage de l'émulateur de terminal
+def clear():
+  os.system('cls' if os.name == 'nt' else 'clear')
+
 #Remplisage des colones
 def remp(plateau):
   count = 0
@@ -33,8 +36,7 @@ def remp(plateau):
      plateau[count].append("~~~")
    count += 1
 
-#test d'une fonction permettant de vérifier si deux cases sont proches(non fonctionnel)
-"""
+#test d'une fonction permettant de vérifier si deux cases sont proches(en test)
 def arenear(case0, case1):
   case0.split('-')
   num0 = int(case0[2]) - 1
@@ -42,9 +44,16 @@ def arenear(case0, case1):
   case1.split('-')
   num1 = int(case1[2]) - 1
   lettre1 = alpha.index(case1[0].upper())
-"""
+  if num0-num1 in range(-1,1):
+    if lettre0-lettre1 in range(-1,1):
+      return True
+    else:
+      return False
+  else:
+    return False
 
-#Modifier la valeur d'une case selon "x-x"
+
+#Placer un bateau de taille 1 sur une case
 def placement(case, plateau):
   try:
     case.split('-')
@@ -58,6 +67,28 @@ def placement(case, plateau):
   except BaseException:
     return -1
 
+#placer un bateau de taille 2 sur deux cases
+def dbplacement(case0, case1, plateau):
+  try:
+    if arenear(case0, case1):
+      case0.split('-')
+      num0 = int(case0[2]) - 1
+      lettre0 = alpha.index(case0[0].upper())
+      case1.split('-')
+      num1 = int(case1[2]) - 1
+      lettre1 = alpha.index(case1[0].upper())
+      if plateau[int(num1)][int(lettre1)] == "~~~":
+        return 1
+        if plateau[int(num0)][int(lettre0)] == "~~~":
+          plateau[int(num0)][int(lettre0)] = "[ ]"
+          plateau[int(num1)][int(lettre1)] = "[ ]"
+          return 2
+      else:
+        return 0
+    else:
+      return 0
+  except BaseException:
+    return -1
 
 #Afficher un plateau
 def aff(plateau):
@@ -100,44 +131,63 @@ def makeo(plateau):
   while count < nbrbateau:
     if placement(caseo(), plateau) == 1:
       count += 1
+  count = 0
+  while count < 1:
+    if dbplacement(caseo(),caseo(), plateau) == 1:
+      count += 1
   
 #Placement manuel des bateaux (dépend de "placement()")
 def makef(plateau):
   print(f"Placez {nbrbateau} bateaux")
   count = 0
   aff(plateau)
-  while count < nbrbateau:
-    retourplacement = placement(input("Case où placer un bateau: "), plateau)
+  while count < nbrbateau-1:
+    retourplacement = placement(input("Case où placer un bateau de taille 1: "), plateau)
     if retourplacement == 1:
-      os.system('cls' if os.name == 'nt' else 'clear')
+      clear()
       aff(plateau)
       count += 1
     elif retourplacement == 0:
       print("Vous ne pouvez pas placer 2 bateaux sur la même case")
     else:
       print("saisie incorrecte")
+  count = 0
+  while count < 1:
+    retourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau: "),input("Case où placer la 2/2 part d'un bateau: "), plateau)
+    if retourplacement == 2:
+      clear()
+      aff(plateau)
+      count += 1
+    elif retourplacement == 0:
+      print("Vous ne pouvez pas placer 2 bateaux sur la même case")
+    else:
+      print("saisie incorrecte")
+  
 
 #Tirer sur une case (case en question, plateau sur lequel tirer, plateau sur lequel afficher, variable à baisser en cas de touche)
 def boom(case, plateau0, plateau1, nbrbat):
-  case.split("-")
-  num = int(case[2]) - 1
-  lettre = alpha.index(case[0].upper())
-  if plateau0 == plateauj:
-    user = "[ordinateur]"
-  else:
-    user = "[joueur]"
-  if plateau0[int(num)][int(lettre)] == "~~~":
-    plateau1[int(num)][int(lettre)] = "~x~"
-    plateau0[int(num)][int(lettre)] = "~x~"
-    print(f"\nManqué! (par {user})")
-  elif plateau0[int(num)][int(lettre)] == "[ ]":
-    plateau1[int(num)][int(lettre)] = "[X]"
-    plateau0[int(num)][int(lettre)] = "[x]"
-    nbrbat -= 1
-    print(f"\nCoulé! (par{user})")
-  else:
-    print(f"\nJe suis débile! ({user})")
-  return nbrbat
+  try:
+    case.split("-")
+    num = int(case[2]) - 1
+    lettre = alpha.index(case[0].upper())
+    if plateau0 == plateauj:
+      user = "[ordinateur]"
+    else:
+      user = "[joueur]"
+    if plateau0[int(num)][int(lettre)] == "~~~":
+      plateau1[int(num)][int(lettre)] = "~x~"
+      plateau0[int(num)][int(lettre)] = "~x~"
+      print(f"\nManqué! (par {user})")
+    elif plateau0[int(num)][int(lettre)] == "[ ]":
+      plateau1[int(num)][int(lettre)] = "[X]"
+      plateau0[int(num)][int(lettre)] = "[x]"
+      nbrbat -= 1
+      print(f"\nCoulé! (par{user})")
+    else:
+      print(f"\nJe suis débile! ({user})")
+    return nbrbat
+  except BaseException:
+    return -1
 
 
 #Saisie utilisateur dans "dim()", permettant de choisir les dimensions du plateau de jeu
@@ -166,8 +216,15 @@ makef(plateauj)
 
 #Lancement et déroulement de la partie
 while partie:
-  os.system('cls' if os.name == 'nt' else 'clear')
-  nbrbateauo = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
+  clear()
+  test = True
+  while test:
+    bat = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo)
+    if bat != -1:
+      nbrbateauo = bat
+      test = False
+    else:
+      print("saisie incorrecte")
   aff(plateaujo)
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
