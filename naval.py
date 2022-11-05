@@ -10,7 +10,7 @@ plateauoj = [] #plateau joueur vu par l'ordinateur
 nbrbateau = 0 #Nombre de bateaux par participants
 linksj = [] #liste des liens entre les morceaux de bateaux du joueur
 linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
-
+rule = "Entrez vos cases au format Lettre-chiffre (L-x)"
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
   count = 0
@@ -153,6 +153,7 @@ def makej(plateau):
     retourplacement = placement(input("Case où placer un bateau de taille 1: "), plateau)
     if retourplacement == 1:
       clear()
+      print(rule)
       aff(plateau)
       count += 1
     elif retourplacement == 0:
@@ -165,6 +166,7 @@ def makej(plateau):
     dbretourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau de taille 2: "),input("Case où placer la 2/2 part d'un bateau de taille 2: "), plateau, linksj)
     if dbretourplacement == 2:
       clear()
+      print(rule)
       aff(plateau)
       count += 1
     elif dbretourplacement == 0:
@@ -177,39 +179,41 @@ def makej(plateau):
 
 #Tirer sur une case (case en question, plateau sur lequel tirer, plateau sur lequel afficher, variable à baisser en cas de touche)
 def boom(case, plateau0, plateau1, nbrbat, link):
-  case2 = case
-  case.split("-")
-  num = int(case[2]) - 1
-  lettre = alpha.index(case[0].upper())
-  if plateau0 == plateauj:
-    user = "[ordinateur]"
-  else:
-    user = "[joueur]"
-  if plateau0[int(num)][int(lettre)] == "~~~":
-      plateau1[int(num)][int(lettre)] = "~x~"
-      plateau0[int(num)][int(lettre)] = "~x~"
-      print(f"\nManqué! (par {user})")
-  elif plateau0[int(num)][int(lettre)] == "[ ]" and case2.upper() in link:
-    if len(link) == 2:
-      link.remove(str(case2.upper()))
-      plateau1[int(num)][int(lettre)] = "[X]"
-      plateau0[int(num)][int(lettre)] = "[x]"
-      print(f"\nTouché! (par{user})")
-    elif len(link) == 1:
-      link.remove(str(case2.upper()))
+  try:
+    case2 = case
+    case.split("-")
+    num = int(case[2]) - 1
+    lettre = alpha.index(case[0].upper())
+    if plateau0 == plateauj:
+      user = "[ordinateur]"
+    else:
+      user = "[joueur]"
+    if plateau0[int(num)][int(lettre)] == "~~~":
+        plateau1[int(num)][int(lettre)] = "~x~"
+        plateau0[int(num)][int(lettre)] = "~x~"
+        print(f"\nManqué! (par {user})")
+    elif plateau0[int(num)][int(lettre)] == "[ ]" and case2.upper() in link:
+      if len(link) == 2:
+        link.remove(str(case2.upper()))
+        plateau1[int(num)][int(lettre)] = "[X]"
+        plateau0[int(num)][int(lettre)] = "[x]"
+        print(f"\nTouché! (par{user})")
+      elif len(link) == 1:
+        link.remove(str(case2.upper()))
+        plateau1[int(num)][int(lettre)] = "[X]"
+        plateau0[int(num)][int(lettre)] = "[x]"
+        nbrbat -= 1
+        print(f"\nCoulé! (par{user})")
+    elif plateau0[int(num)][int(lettre)] == "[ ]":
       plateau1[int(num)][int(lettre)] = "[X]"
       plateau0[int(num)][int(lettre)] = "[x]"
       nbrbat -= 1
       print(f"\nCoulé! (par{user})")
-  elif plateau0[int(num)][int(lettre)] == "[ ]":
-    plateau1[int(num)][int(lettre)] = "[X]"
-    plateau0[int(num)][int(lettre)] = "[x]"
-    nbrbat -= 1
-    print(f"\nCoulé! (par{user})")
-  else:
-    print(f"\nJe suis débile! ({user})")
-  return nbrbat #nombre de bateau sur le plateau0 après le tir
-
+    else:
+      print(f"\nJe suis débile! ({user})")
+    return nbrbat #nombre de bateau sur le plateau0 après le tir
+  except BaseException:
+    return -1
 #Saisie utilisateur dans "dim()", permettant de choisir les dimensions du plateau de jeu
 count = 0
 while count != 1:
@@ -221,7 +225,8 @@ while count != 1:
     print(f"Veulliez entrer un nombre compris entre 3 et {len(alpha)+1}")
   else:
     print("saisie incorrecte")
-
+clear()
+ 
 nbrbateauj = nbrbateau #nombre de bateaux du joueur
 nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
 partie = True #indique que la partie est en cour
@@ -232,13 +237,13 @@ remp(plateaujo)
 remp(plateauo)
 remp(plateauoj)
 makeo(plateauo)
+print(rule)
 makej(plateauj)
 
 #Lancement et déroulement de la partie
 while partie:
   clear()
-  print(linksj)
-  print(linkso)
+  print(rule)
   test = False
   #boucle permettant de 
   while test == False:
