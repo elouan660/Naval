@@ -11,6 +11,7 @@ nbrbateau = 0 #Nombre de bateaux par participants
 linksj = [] #liste des liens entre les morceaux de bateaux du joueur
 linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
 rule = "Entrez vos cases au format Lettre-chiffre (ex: a-1)" #Règles affichées en permanence à l'écran
+
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
   count = 0
@@ -31,7 +32,7 @@ def dim(dim):
 def clear():
   os.system('cls' if os.name == 'nt' else 'clear')
 
-#Remplisage des colones
+#Créatuon des cases
 def remp(plateau):
   count = 0
   for tab in range(len(plateau)):
