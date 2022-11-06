@@ -89,9 +89,9 @@ def dbplacement(case0, case1, plateau, link):
           link.append(case1.upper())
           return 2 #Si tout est bon
         else:
-          return 0 #Si une ou plusieurs cases sont déja occupées par un autre bateau
+          return 0 #Si deux cases sont déja occupées par un autre bateau
       else:
-        return 0 #Si une ou plusieurs cases sont déja occupées par un autre bateau
+        return 0 #Si une ou deux cases sont déja occupées par un autre bateau
     else:
       return 1 #Si les deux cases entrées ne sont pas adjacentes
   except BaseException:
