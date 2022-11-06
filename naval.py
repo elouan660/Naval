@@ -10,7 +10,7 @@ plateauoj = [] #plateau joueur vu par l'ordinateur
 nbrbateau = 0 #Nombre de bateaux par participants
 linksj = [] #liste des liens entre les morceaux de bateaux du joueur
 linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
-rule = "Entrez vos cases au format Lettre-chiffre (L-x)"
+rule = "Entrez vos cases au format Lettre-chiffre (ex: a-1)" #Règles affichées en permanence à l'écran
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
   count = 0
@@ -27,9 +27,10 @@ def dim(dim):
   except ValueError:
     return -1
 
-#Nettoyage de l'affichage de l'émulateur de terminal
+#Nettoyage de l'écran
 def clear():
   os.system('cls' if os.name == 'nt' else 'clear')
+
 #Remplisage des colones
 def remp(plateau):
   count = 0
@@ -145,17 +146,19 @@ def makeo(plateau):
   
 #"make joueur" Placement manuel des bateaux (dépend de "placement()")
 def makej(plateau):
-  print(f"Placez {nbrbateau} bateaux")
+  nbrbatoplace = nbrbateau #nombre de bateau à placer restant
   count = 0
   aff(plateau)
   #placement des baeaux de taille 1
   while count < nbrbateau-1:
+    print(f"Placez {nbrbatoplace} bateaux")
     retourplacement = placement(input("Case où placer un bateau de taille 1: "), plateau)
     if retourplacement == 1:
       clear()
       print(rule)
       aff(plateau)
       count += 1
+      nbrbatoplace -= 1
     elif retourplacement == 0:
       print("Vous ne pouvez pas placer 2 bateaux sur la même case")
     else:
@@ -163,12 +166,14 @@ def makej(plateau):
   count = 0
   #placement des bateaux de taille 2
   while count < 1:
+    print(f"Placez {nbrbatoplace} bateaux")
     dbretourplacement = dbplacement(input("Case où placer la 1/2 part d'un bateau de taille 2: "),input("Case où placer la 2/2 part d'un bateau de taille 2: "), plateau, linksj)
     if dbretourplacement == 2:
       clear()
       print(rule)
       aff(plateau)
       count += 1
+      nbrbatoplace -= 1
     elif dbretourplacement == 0:
       print("Vous ne pouvez pas placer 2 bateaux sur la même case")
     elif dbretourplacement == 1:
@@ -214,6 +219,8 @@ def boom(case, plateau0, plateau1, nbrbat, link):
     return nbrbat #nombre de bateau sur le plateau0 après le tir
   except BaseException:
     return -1
+
+clear()
 #Saisie utilisateur dans "dim()", permettant de choisir les dimensions du plateau de jeu
 count = 0
 while count != 1:
@@ -264,6 +271,6 @@ while partie:
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
     partie = False
-  input("Tapez entrer pour continuer: ")
+  input("[Tapez entrer pour continuer]")
 
 print(f"\nEt le gagnant est : {winner}")
