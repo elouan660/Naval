@@ -65,11 +65,11 @@ def placement(case, plateau):
     lettre = alpha.index(case[0].upper())
     if plateau[int(num)][int(lettre)] == "~~~":
       plateau[int(num)][int(lettre)] = "[ ]"
-      return 1
+      return 1 #Si tout es bon
     else:
-      return 0
+      return 0 #Si un bateau est déja sur la case
   except BaseException:
-    return -1
+    return -1 #Si la saisie est incorrecte
 
 #"double placement" placer un bateau de taille 2 sur deux cases
 def dbplacement(case0, case1, plateau, link):
