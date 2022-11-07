@@ -48,7 +48,7 @@ def arenear(case0, case1):
   case1.split('-')
   num1 = int(case1[2])
   lettre1 = alpha.index(case1[0].upper())
-  if num0-num1 in range(-1,1) and lettre0-lettre1 in range(-1,1):
+  if num0-num1 in range(-1,1) and lettre0-lettre1 in range(-1,1) and num0-num1 + lettre0-lettre1 != 0:
     return True
   else:
     return False
@@ -58,7 +58,7 @@ def arenear(case0, case1):
 def placement(case, plateau):
   try:
     case.split('-')
-    num = int(case[2]) - 1
+    num = int(case[2]) - 1 #car le compteur commence à 0 contrairement à case[2]
     lettre = alpha.index(case[0].upper())
     if plateau[int(num)][int(lettre)] == "~~~":
       plateau[int(num)][int(lettre)] = "[ ]"
