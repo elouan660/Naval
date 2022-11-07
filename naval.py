@@ -49,7 +49,7 @@ def arenear(case0, case1):
   num1 = int(case1[2]) -1
   lettre1 = alpha.index(case1[0].upper())
   print(f"[{num0-num1}|{lettre0-lettre1}]")
-  if num0-num1 in range(-2,2) and lettre0-lettre1 in range(-2,2):
+  if num0-num1 in range(-1,1) and lettre0-lettre1 in range(-1,1):
     return True
   else:
     return False
