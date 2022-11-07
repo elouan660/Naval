@@ -43,16 +43,13 @@ def remp(plateau):
 #Vérifier si deux cases sont adjacentes
 def arenear(case0, case1):
   case0.split('-')
-  num0 = int(case0[2]) - 1
+  num0 = int(case0[2])
   lettre0 = alpha.index(case0[0].upper())
   case1.split('-')
-  num1 = int(case1[2]) - 1
+  num1 = int(case1[2])
   lettre1 = alpha.index(case1[0].upper())
-  if num0-num1 in range(-1,1):
-    if lettre0-lettre1 in range(-1,1):
-      return True
-    else:
-      return False
+  if num0-num1 in range(-1,1) and lettre0-lettre1 in range(-1,1):
+    return True
   else:
     return False
 
