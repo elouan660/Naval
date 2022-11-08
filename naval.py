@@ -11,6 +11,8 @@ nbrbateau = 0 #Nombre de bateaux par participants
 linksj = [] #liste des liens entre les morceaux de bateaux du joueur
 linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
 rule = "Entrez vos cases au format Lettre-chiffre (ex: a-1)" #Règles affichées en permanence à l'écran
+scorej = 0
+scoreo = 0
 
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
@@ -32,7 +34,7 @@ def dim(dim):
 def clear():
   os.system('cls' if os.name == 'nt' else 'clear')
 
-#Créatuon des cases
+#Création des cases
 def remp(plateau):
   count = 0
   for tab in range(len(plateau)):
@@ -48,7 +50,7 @@ def arenear(case0, case1):
   case1.split('-')
   num1 = int(case1[2]) -1
   lettre1 = alpha.index(case1[0].upper())
-  print(f"[{num0-num1}|{lettre0-lettre1}]")
+  #print(f"[{num0-num1}|{lettre0-lettre1}]") #<---test pour débugage
   if num0-num1 in range(-1,2) and lettre0-lettre1 in range(-1,2):
     return True
   else:
@@ -72,22 +74,19 @@ def placement(case, plateau):
 #"double placement" placer un bateau de taille 2 sur deux cases
 def dbplacement(case0, case1, plateau, link):
   try:
-    if arenear(case0, case1) and case0 != case1:
+    if arenear(case0, case1) and case0 != case1: #si les deux cases sont proche et ne sont pas les mêmes
       case0.split('-')
       num0 = int(case0[2]) - 1
       lettre0 = alpha.index(case0[0].upper())
       case1.split('-')
       num1 = int(case1[2]) - 1
       lettre1 = alpha.index(case1[0].upper())
-      if plateau[int(num0)][int(lettre0)] == "~~~":
-        if plateau[int(num1)][int(lettre1)] == "~~~":
-          plateau[int(num0)][int(lettre0)] = "[ ]"
-          plateau[int(num1)][int(lettre1)] = "[ ]"
-          link.append(case0.upper())
-          link.append(case1.upper())
-          return 2 #Si tout est bon
-        else:
-          return 0 #Si deux cases sont déja occupées par un autre bateau
+      if plateau[int(num0)][int(lettre0)] == "~~~" and plateau[int(num1)][int(lettre1)] == "~~~":
+        plateau[int(num0)][int(lettre0)] = "[ ]"
+        plateau[int(num1)][int(lettre1)] = "[ ]"
+        link.append(case0.upper())
+        link.append(case1.upper())
+        return 2 #Si tout est bon
       else:
         return 0 #Si une ou deux cases sont déja occupées par un autre bateau
     else:
