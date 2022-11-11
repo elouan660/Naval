@@ -291,13 +291,13 @@ while partie:
   print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
   if nbrbateauo <= 0:
     winner = "le Joueur"
-    partie = False
+    partie = False #arreter la partie
   nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj, linksj, listj)
   aff(plateauj)
   print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
-    partie = False
+    partie = False #arreter la partie
   print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
   input("[Tapez entrer pour continuer]")
 
