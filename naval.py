@@ -54,7 +54,7 @@ def arenear(case0, case1):
   num1 = int(case1[2]) -1
   lettre1 = alpha.index(case1[0].upper())
   #print(f"[{num0-num1}|{lettre0-lettre1}]") #<---test pour débugage
-  if num0-num1 in range(-1,2) and lettre0-lettre1 in range(-1,2):
+  if num0-num1 in range(-1,2) and lettre0-lettre1 in range(-1,2) and (num0-num1)*(lettre0-lettre1) == 0:
     return True
   else:
     return False
@@ -206,25 +206,38 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
     elif plateau0[int(num)][int(lettre)] == "[ ]" and case2.upper() in link:
       if len(link) == 2:
         link.remove(str(case2.upper()))
+        listb.remove(str(case2.upper()))
         plateau1[int(num)][int(lettre)] = "[X]"
         plateau0[int(num)][int(lettre)] = "[x]"
         print(f"\nTouché! (par{user})")
       elif len(link) == 1:
         link.remove(str(case2.upper()))
+        listb.remove(str(case2.upper()))
         plateau1[int(num)][int(lettre)] = "[X]"
         plateau0[int(num)][int(lettre)] = "[x]"
         nbrbat -= 1
         print(f"\nCoulé! (par{user})")
+        #augmenter de 8 le score en cas de coulage
+        if user == "[ordinateur]":
+          scoreo += 8
+        else:
+          scorej += 8
     elif plateau0[int(num)][int(lettre)] == "[ ]":
+      listb.remove(str(case2.upper()))
       plateau1[int(num)][int(lettre)] = "[X]"
       plateau0[int(num)][int(lettre)] = "[x]"
       nbrbat -= 1
       print(f"\nCoulé! (par{user})")
+      #augmenter de 8 le score en cas de coulage
+      if user == "[ordinateur]":
+        scoreo += 8
+      else:
+        scorej += 8
     else:
       print(f"\nJe suis débile! ({user})")
+    #augmenter le score de 1 si le tir à manqué de peu un bateau
     for element in listb:
       if arenear(case, element):
-        listb.remove(element)
         if user == "[ordinateur]":
           scoreo += 1
         else:
@@ -263,7 +276,7 @@ makej(plateauj)
 #Lancement et déroulement de la partie
 while partie:
   clear()
-  print(f"{listj}-{listo}")
+  #print(f"{listj}-{listo}") #<---test pour débugage
   print(rule)
   test = False
   #boucle permettant de 
@@ -285,8 +298,6 @@ while partie:
   if nbrbateauj <= 0:
     winner = "l'Ordinateur"
     partie = False
-  scorej += (nbrbateau-nbrbateauo)*8
-  scoreo += (nbrbateau-nbrbateauj)*8
   print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
   input("[Tapez entrer pour continuer]")
 
