@@ -14,8 +14,8 @@ linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
 rule = "Entrez vos cases au format Lettre-chiffre (ex: a-1)" #Règles affichées en permanence à l'écran
 scorej = 0 #score du joueur
 scoreo = 0 #score de l'ordinateur
-listj = [] #liste des bateaux du joueur
-listo = [] #liste des bateaux de l'ordinateur
+listj = [] #liste des bateaux en service du joueur
+listo = [] #liste des bateaux en service de l'ordinateur
 
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
@@ -135,7 +135,7 @@ def caseo():
   case = f"{alpha[lettre]}-{str(numo)}"
   return case
 
-#"make ordinateur" Placement automatique des bateaux (dépend de "placement()")
+#"make ordinateur" Placement automatique des bateaux (dépend de "placement()" et "dbplacement()")
 def makeo(plateau):
   count = 0
   while count < nbrbateau-1:
@@ -148,7 +148,7 @@ def makeo(plateau):
     if dbplacement(caseo0, caseo1, plateau, linkso, listo) == 2:
       count += 1
   
-#"make joueur" Placement manuel des bateaux (dépend de "placement()")
+#"make joueur" Placement manuel des bateaux (dépend de "placement()" et "dbplacement()")
 def makej(plateau):
   nbrbatoplace = nbrbateau #nombre de bateau à placer restant
   count = 0
