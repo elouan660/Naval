@@ -287,7 +287,7 @@ while partie:
     partie = False
   scorej += (nbrbateau-nbrbateauo)*8
   scoreo += (nbrbateau-nbrbateauj)*8
-  print(f"score joueur: {scorej}\nscore ordinateur: {scoreo}")
+  print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
   input("[Tapez entrer pour continuer]")
 
 print(f"\nEt le gagnant est : {winner}")
