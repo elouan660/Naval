@@ -263,6 +263,9 @@ while count != 1:
 clear()
  
 
+
+
+
 #Lancement et déroulement de la partie
 def jouer_une_partie():
   global cotéplateau
@@ -312,8 +315,12 @@ def jouer_une_partie():
   listofwinners.append([username, winner, scorej, scoreo])
   return winner
 
+
+
+
+
 partieplay = 0
-j = 0
+j = 0 #numéro du joueur actuel
 rejouer = True
 while rejouer:
   winner = jouer_une_partie()
@@ -353,24 +360,37 @@ while rejouer:
     if newparty.upper() != "Y":
       clear()
       supercount = 0
-      print("\n")
+      print("\n######################-Résultats finaux-###########################\n")
       for thing in listofsuperwinner:
-        print("######################-Résultats finaux-###########################\n")
         count = 0
-        print(f"\n*****************partie n°{supercount}*****************")
+        print(f"\n  *****************partie n°{supercount}*****************")
         for thing in listofwinners:
-          result = f"joueur: {listofsuperwinner[supercount][count][0]}  gagnant: {listofsuperwinner[supercount][count][1]}  score joueur: {listofsuperwinner[supercount][count][2]}  score ordinateur: {listofsuperwinner[supercount][count][3]}"
+          result = f"  joueur: {listofsuperwinner[supercount][count][0]}  gagnant: {listofsuperwinner[supercount][count][1]}  score joueur: {listofsuperwinner[supercount][count][2]}  score ordinateur: {listofsuperwinner[supercount][count][3]}"
           print(result)
           count += 1
-          count = 0
+        count = 0
         highscore = 0
         for thing in listofwinners:
           if listofwinners[count][2] >= highscore:
             highscore = listofwinners[count][2]
             bestplayer = listofwinners[count][1]
           count += 1
-        print(f"Meilleur joueur de cette partie: {bestplayer}")
+        print(f"  Meilleur joueur de cette partie: {bestplayer}")
+        print("  ********************************************\n")
         supercount += 1
+      supercount = 0
+      for thing in listofsuperwinner:
+        count = 0
+        for thing in listofsuperwinner[supercount]:
+          if listofsuperwinner[supercount][count][2] >= highscore:
+            superhighscore = listofsuperwinner[supercount][count][2]
+            superbestplayer = listofsuperwinner[supercount][count][1]
+          count += 1
+        supercount += 1
+      print("\n###################################################################")
+      print(f"Et le SUPER MEILLEUR joueur inter-partie est {superbestplayer}")
+      print(listofsuperwinner)
+
       rejouer = False
     else:
       j = 0
