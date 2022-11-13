@@ -342,8 +342,8 @@ while rejouer:
     highscore = 0
     count = 0
     for thing in listofwinners:
-      if listofwinners[count][3] > highscore:
-        highscore = listofwinners[count][3]
+      if listofwinners[count][2] >= highscore:
+        highscore = listofwinners[count][2]
         bestplayer = listofwinners[count][1]
       count += 1
     listofsuperwinner.append(listofwinners)
@@ -363,9 +363,10 @@ while rejouer:
           print(result)
           count += 1
           count = 0
+        highscore = 0
         for thing in listofwinners:
-          if listofwinners[count][3] > highscore:
-            highscore = listofwinners[count][3]
+          if listofwinners[count][2] >= highscore:
+            highscore = listofwinners[count][2]
             bestplayer = listofwinners[count][1]
           count += 1
         print(f"Meilleur joueur de cette partie: {bestplayer}")
