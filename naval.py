@@ -15,8 +15,9 @@ scorej = 0 #score du joueur
 scoreo = 0 #score de l'ordinateur
 listj = [] #liste des bateaux en service du joueur
 listo = [] #liste des bateaux en service de l'ordinateur
-listofwinners = []
 
+listofwinners = []
+listofsuperwinner = []
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
   count = 0
@@ -250,7 +251,8 @@ clear()
 #Saisie utilisateur dans "dim()", permettant de choisir les dimensions du plateau de jeu
 count = 0
 while count != 1:
-  retourdim = dim(input("Coté des plateaux: "))
+  cotéplateau = input("Coté des plateaux: ")
+  retourdim = dim(cotéplateau)
   if retourdim > 1:
     count += 1
     nbrbateau = (retourdim//2)+1
@@ -260,28 +262,29 @@ while count != 1:
     print("saisie incorrecte")
 clear()
  
-nbrbateauj = nbrbateau #nombre de bateaux du joueur
-nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
-
-#Composition des plateaux
-remp(plateauj)
-remp(plateaujo)
-remp(plateauo)
-remp(plateauoj)
-makeo(plateauo)
-print(rule)
-makej(plateauj)
 
 #Lancement et déroulement de la partie
-def jouer_une_partie(partie):
-  global nbrbateauo
-  global nbrbateauj
-  global username
+def jouer_une_partie():
+  global cotéplateau
+  #Si la partie n'est pas la première
+  if j != 0:
+    dim(cotéplateau)
+  #Composition des plateaux
+  remp(plateauj)
+  remp(plateaujo)
+  remp(plateauo)
+  remp(plateauoj)
+  makeo(plateauo)
+  print(rule)
+  makej(plateauj)
+  nbrbateauj = nbrbateau #nombre de bateaux du joueur
+  nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
+
   username = input("Nom utilisateur: ")
   partie = True #indique que la partie est en cours
   while partie:
     clear()
-    print(username)
+    print(f"Partie n°{partieplay+1}, Joueur: {username}")
     #print(f"{listj}-{listo}") #<---test pour débugage
     print(rule)
     test = False
@@ -309,13 +312,78 @@ def jouer_une_partie(partie):
   listofwinners.append([username, winner, scorej, scoreo])
   return winner
 
-nbrpartie = 0
-while True:
-  winner = jouer_une_partie(nbrpartie)
+partieplay = 0
+j = 0
+rejouer = True
+while rejouer:
+  winner = jouer_une_partie()
   print(f"\nEt le gagnant est : {winner}")
   if input("Passer au joueur suivant? (y/n)").upper() == "Y":
-    nbrpartie += 1
+    j += 1
+    #reinitialiser le jeu
+    plateauj = [] #plateau joueur
+    plateaujo = [] #plateau ordinateur vu par le joueur
+    plateauo = [] #plateau ordinateur
+    plateauoj = [] #plateau joueur vu par l'ordinateur
+    linksj = [] #liste des liens entre les morceaux de bateaux du joueur
+    linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
+    scorej = 0 #score du joueur
+    scoreo = 0 #score de l'ordinateur
+    listj = [] #liste des bateaux en service du joueur
+    listo = [] #liste des bateaux en service de l'ordinateur
+    clear()
   else:
+    print("\n")
+    count = 0
     for thing in listofwinners:
-      print(f"partie{nbrpartie}: joueur: {listofwinners[nbrpartie][0]} gagnant: {listofwinners[nbrpartie][1]} score joueur: {listofwinners[nbrpartie][2]} score ordinateur: {listofwinners[nbrpartie][3]}")
-      break
+      result = f"joueur: {listofwinners[count][0]}  gagnant: {listofwinners[count][1]}  score joueur: {listofwinners[count][2]}  score ordinateur: {listofwinners[count][3]}"
+      print(result)
+      count += 1
+    highscore = 0
+    count = 0
+    for thing in listofwinners:
+      if listofwinners[count][3] > highscore:
+        highscore = listofwinners[count][3]
+        bestplayer = listofwinners[count][1]
+      count += 1
+    listofsuperwinner.append(listofwinners)
+
+    print(f"Et le meilleur joueur est: {bestplayer}")
+    newparty = input(f"Refaire une partie? (y/n)")
+    if newparty.upper() != "Y":
+      clear()
+      supercount = 0
+      print("\n")
+      for thing in listofsuperwinner:
+        print("######################-Résultats finaux-###########################\n")
+        count = 0
+        print(f"\n*****************partie n°{supercount}*****************")
+        for thing in listofwinners:
+          result = f"joueur: {listofsuperwinner[supercount][count][0]}  gagnant: {listofsuperwinner[supercount][count][1]}  score joueur: {listofsuperwinner[supercount][count][2]}  score ordinateur: {listofsuperwinner[supercount][count][3]}"
+          print(result)
+          count += 1
+          count = 0
+        for thing in listofwinners:
+          if listofwinners[count][3] > highscore:
+            highscore = listofwinners[count][3]
+            bestplayer = listofwinners[count][1]
+          count += 1
+        print(f"Meilleur joueur de cette partie: {bestplayer}")
+        supercount += 1
+      rejouer = False
+    else:
+      j = 0
+      partieplay += 1
+      #reinitialiser le jeu
+      plateauj = [] #plateau joueur
+      plateaujo = [] #plateau ordinateur vu par le joueur
+      plateauo = [] #plateau ordinateur
+      plateauoj = [] #plateau joueur vu par l'ordinateur
+      linksj = [] #liste des liens entre les morceaux de bateaux du joueur
+      linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
+      scorej = 0 #score du joueur
+      scoreo = 0 #score de l'ordinateur
+      listj = [] #liste des bateaux en service du joueur
+      listo = [] #liste des bateaux en service de l'ordinateur
+      dim(cotéplateau)
+      clear()
