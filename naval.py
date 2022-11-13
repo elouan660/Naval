@@ -15,6 +15,7 @@ scorej = 0 #score du joueur
 scoreo = 0 #score de l'ordinateur
 listj = [] #liste des bateaux en service du joueur
 listo = [] #liste des bateaux en service de l'ordinateur
+listofwinners = []
 
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
@@ -261,7 +262,6 @@ clear()
  
 nbrbateauj = nbrbateau #nombre de bateaux du joueur
 nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
-partie = True #indique que la partie est en cours
 
 #Composition des plateaux
 remp(plateauj)
@@ -273,31 +273,49 @@ print(rule)
 makej(plateauj)
 
 #Lancement et déroulement de la partie
-while partie:
-  clear()
-  #print(f"{listj}-{listo}") #<---test pour débugage
-  print(rule)
-  test = False
-  #boucle permettant de 
-  while test == False:
-    bat1 = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo, linkso, listo)
-    if bat1 != -1:
-      nbrbateauo = bat1
-      test = True
-    else:
-      print("saisie incorrecte")
-  aff(plateaujo)
-  print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
-  if nbrbateauo <= 0:
-    winner = "le Joueur"
-    partie = False #arreter la partie
-  nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj, linksj, listj)
-  aff(plateauj)
-  print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
-  if nbrbateauj <= 0:
-    winner = "l'Ordinateur"
-    partie = False #arreter la partie
-  print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
-  input("[Tapez entrer pour continuer]")
+def jouer_une_partie(partie):
+  global nbrbateauo
+  global nbrbateauj
+  global username
+  username = input("Nom utilisateur: ")
+  partie = True #indique que la partie est en cours
+  while partie:
+    clear()
+    print(username)
+    #print(f"{listj}-{listo}") #<---test pour débugage
+    print(rule)
+    test = False
+    #boucle permettant de 
+    while test == False:
+      bat1 = boom(input("case où tirer: "), plateauo, plateaujo, nbrbateauo, linkso, listo)
+      if bat1 != -1:
+        nbrbateauo = bat1
+        test = True
+      else:
+        print("saisie incorrecte")
+    aff(plateaujo)
+    print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
+    if nbrbateauo <= 0:
+      winner = username
+      partie = False #arreter la partie
+    nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj, linksj, listj)
+    aff(plateauj)
+    print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
+    if nbrbateauj <= 0:
+      winner = "l'Ordinateur"
+      partie = False #arreter la partie
+    print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
+    input("[Tapez entrer pour continuer]")
+  listofwinners.append([username, winner, scorej, scoreo])
+  return winner
 
-print(f"\nEt le gagnant est : {winner}")
+nbrpartie = 0
+while True:
+  winner = jouer_une_partie(nbrpartie)
+  print(f"\nEt le gagnant est : {winner}")
+  if input("Passer au joueur suivant? (y/n)").upper() == "Y":
+    nbrpartie += 1
+  else:
+    for thing in listofwinners:
+      print(f"partie{nbrpartie}: joueur: {listofwinners[nbrpartie][0]} gagnant: {listofwinners[nbrpartie][1]} score joueur: {listofwinners[nbrpartie][2]} score ordinateur: {listofwinners[nbrpartie][3]}")
+      break
