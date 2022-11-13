@@ -3,18 +3,18 @@ import os as os
 
 #alphabet ci dessous
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-plateauj = [] #plateau joueur
-plateaujo = [] #plateau ordinateur vu par le joueur
-plateauo = [] #plateau ordinateur
-plateauoj = [] #plateau joueur vu par l'ordinateur
+plateauj = [] #plateau joueur 1
+plateaujo = [] #plateau joueur 2 vu par le joueur 1
+plateauo = [] #plateau joueur 2
+plateauoj = [] #plateau joueur 1 vu par l'joueur 2
 nbrbateau = 0 #Nombre de bateaux par participants
-linksj = [] #liste des liens entre les morceaux de bateaux du joueur
-linkso = [] #liste des liens entre les morceaux de bateaux de l'ordinateur
+linksj = [] #liste des liens entre les morceaux de bateaux du joueur 1
+linkso = [] #liste des liens entre les morceaux de bateaux de l'joueur 2
 rule = "Entrez vos cases au format Lettre-chiffre (ex: a-1)" #Règles affichées en permanence à l'écran
-scorej = 0 #score du joueur
-scoreo = 0 #score de l'ordinateur
-listj = [] #liste des bateaux en service du joueur
-listo = [] #liste des bateaux en service de l'ordinateur
+scorej = 0 #score du joueur 1
+scoreo = 0 #score de l'joueur 2
+listj = [] #liste des bateaux en service du joueur 1
+listo = [] #liste des bateaux en service de l'joueur 2
 
 #"dimensions" Définition des dimension du tableau
 def dim(dim):
@@ -103,9 +103,9 @@ def dbplacement(case0, case1, plateau, link, listb):
 def aff(plateau):
   #detection de l'utilisateur
   if plateau == plateauo or plateau == plateaujo:
-    user = "ordinateur"
+    user = "joueur 2"
   elif plateau == plateauj or plateau == plateauoj:
-    user = "joueur"
+    user = "joueur 1"
 
   #Affichage des lettres
   count = 0
@@ -127,14 +127,14 @@ def aff(plateau):
     print("|\n")
     count += 1
 
-#"case ordinateur" générer et renvoyer une case aléatoirement
+#"case joueur 2" générer et renvoyer une case aléatoirement
 def caseo():
   lettre = randint(0,len(plateauo)-1)
   numo = randint(1,len(plateauo)-1)
   case = f"{alpha[lettre]}-{str(numo)}"
   return case
 
-#"make ordinateur" Placement automatique des bateaux (dépend de "placement()" et "dbplacement()")
+#"make joueur 2" Placement automatique des bateaux (dépend de "placement()" et "dbplacement()")
 def makeo(plateau):
   count = 0
   while count < nbrbateau-1:
@@ -147,8 +147,9 @@ def makeo(plateau):
     if dbplacement(caseo0, caseo1, plateau, linkso, listo) == 2:
       count += 1
   
-#"make joueur" Placement manuel des bateaux (dépend de "placement()" et "dbplacement()")
-def makej(plateau):
+#"make joueur 1" Placement manuel des bateaux (dépend de "placement()" et "dbplacement()")
+def makej(plateau, user):
+  print(f"au tour de {user}")
   nbrbatoplace = nbrbateau #nombre de bateau à placer restant
   count = 0
   aff(plateau)
@@ -195,9 +196,9 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
     num = int(case[2]) - 1
     lettre = alpha.index(case[0].upper())
     if plateau0 == plateauj:
-      user = "[ordinateur]"
+      user = "[joueur 2]"
     else:
-      user = "[joueur]"
+      user = "[joueur 1]"
     if plateau0[int(num)][int(lettre)] == "~~~":
         plateau1[int(num)][int(lettre)] = "~x~"
         plateau0[int(num)][int(lettre)] = "~x~"
@@ -217,7 +218,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
         nbrbat -= 1
         print(f"\nCoulé! (par{user})")
         #augmenter de 8 le score en cas de coulage
-        if user == "[ordinateur]":
+        if user == "[joueur 2]":
           scoreo += 8
         else:
           scorej += 8
@@ -228,7 +229,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
       nbrbat -= 1
       print(f"\nCoulé! (par{user})")
       #augmenter de 8 le score en cas de coulage
-      if user == "[ordinateur]":
+      if user == "[joueur 2]":
         scoreo += 8
       else:
         scorej += 8
@@ -237,7 +238,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
     #augmenter le score de 1 si le tir à manqué de peu un bateau
     for element in listb:
       if arenear(case, element):
-        if user == "[ordinateur]":
+        if user == "[joueur 2]":
           scoreo += 1
         else:
           scorej += 1
@@ -259,8 +260,8 @@ while count != 1:
     print("saisie incorrecte")
 clear()
  
-nbrbateauj = nbrbateau #nombre de bateaux du joueur
-nbrbateauo = nbrbateau #nombre de bateaux de l'ordinateur
+nbrbateauj = nbrbateau #nombre de bateaux du joueur 1
+nbrbateauo = nbrbateau #nombre de bateaux de l'joueur 2
 partie = True #indique que la partie est en cours
 
 #Composition des plateaux
@@ -268,9 +269,9 @@ remp(plateauj)
 remp(plateaujo)
 remp(plateauo)
 remp(plateauoj)
-makeo(plateauo)
+makej(plateauj, "joueur 1")
 print(rule)
-makej(plateauj)
+makej(plateauo, "joueur 2")
 
 #Lancement et déroulement de la partie
 while partie:
@@ -287,17 +288,17 @@ while partie:
     else:
       print("saisie incorrecte")
   aff(plateaujo)
-  print(f"nombre de bateau de l'ordinateur restant: {nbrbateauo}")
+  print(f"nombre de bateau de l'joueur 2 restant: {nbrbateauo}")
   if nbrbateauo <= 0:
-    winner = "le Joueur"
+    winner = "le joueur 1"
     partie = False #arreter la partie
   nbrbateauj = boom(caseo(), plateauj, plateauoj, nbrbateauj, linksj, listj)
   aff(plateauj)
-  print(f"nombre de bateaux du joueur restant: {nbrbateauj}")
+  print(f"nombre de bateaux du joueur 1 restant: {nbrbateauj}")
   if nbrbateauj <= 0:
-    winner = "l'Ordinateur"
+    winner = "l'joueur 2"
     partie = False #arreter la partie
-  print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
+  print(f"\nscore joueur 1: {scorej}\nscore joueur 2: {scoreo}")
   input("[Tapez entrer pour continuer]")
 
 print(f"\nEt le gagnant est : {winner}")
