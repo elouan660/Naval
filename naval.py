@@ -363,7 +363,7 @@ while rejouer:
       print("\n######################-Résultats finaux-###########################\n")
       for thing in listofsuperwinner:
         count = 0
-        print(f"\n  *****************partie n°{supercount}*****************")
+        print(f"\n  *****************partie n°{supercount+1}*****************")
         for thing in listofwinners:
           result = f"  joueur: {listofsuperwinner[supercount][count][0]}  gagnant: {listofsuperwinner[supercount][count][1]}  score joueur: {listofsuperwinner[supercount][count][2]}  score ordinateur: {listofsuperwinner[supercount][count][3]}"
           print(result)
