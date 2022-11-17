@@ -200,10 +200,12 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
       user = "[ordinateur]"
     else:
       user = "[joueur]"
+    #Si cette case est touchée pour la première fois et qu'il n'y a rien sur celle-ci
     if plateau0[int(num)][int(lettre)] == "~~~":
         plateau1[int(num)][int(lettre)] = "~x~"
         plateau0[int(num)][int(lettre)] = "~x~"
         print(f"\nManqué! (par {user})")
+    #Si cette case est touchée pour la première fois et qu'il y a un bateau de taille 2 sur celle-ci    
     elif plateau0[int(num)][int(lettre)] == "[ ]" and case2.upper() in link:
       if len(link) == 2:
         link.remove(str(case2.upper()))
@@ -223,6 +225,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
           scoreo += 8
         else:
           scorej += 8
+    #Si cette case est touchée pour la première fois et qu'il y a un bateau de taille 1 sur celle-ci    
     elif plateau0[int(num)][int(lettre)] == "[ ]":
       listb.remove(str(case2.upper()))
       plateau1[int(num)][int(lettre)] = "[X]"
@@ -234,6 +237,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
         scoreo += 8
       else:
         scorej += 8
+    #Si cette case avait déja été touchée
     else:
       print(f"\nJe suis débile! ({user})")
     #augmenter le score de 1 si le tir à manqué de peu un bateau
@@ -312,16 +316,15 @@ def jouer_une_partie():
       partie = False #arreter la partie
     print(f"\nscore joueur: {scorej}\nscore ordinateur: {scoreo}")
     input("[Tapez entrer pour continuer]")
-  listofwinners.append([username, winner, scorej, scoreo])
+  listofwinners[partieplay].append([username, winner, scorej, scoreo])
   return winner
 
 
 
 
-
-partieplay = 0
-j = 0 #numéro du joueur actuel
-rejouer = True
+partieplay = 0 #numéro de la partie en cours
+rejouer = True #si le joueur désire jouer
+listofwinners.append([]) #liste contenant les premiers résultats de la partie
 while rejouer:
   winner = jouer_une_partie()
   print(f"\nEt le gagnant est : {winner}")
@@ -340,60 +343,61 @@ while rejouer:
     listo = [] #liste des bateaux en service de l'ordinateur
     clear()
   else:
+    #si cette partie s'arrête ici, afficher les résultats de celle-ci
     print("\n")
     count = 0
-    for thing in listofwinners:
-      result = f"joueur: {listofwinners[count][0]}  gagnant: {listofwinners[count][1]}  score joueur: {listofwinners[count][2]}  score ordinateur: {listofwinners[count][3]}"
-      print(result)
-      count += 1
     highscore = 0
-    count = 0
-    for thing in listofwinners:
-      if listofwinners[count][2] >= highscore:
-        highscore = listofwinners[count][2]
-        bestplayer = listofwinners[count][1]
+    print(f"\n*****************party n°{partieplay+1}*****************")
+    for thing in listofwinners[partieplay]:
+      result = f"joueur: {listofwinners[partieplay][count][0]}  gagnant: {listofwinners[partieplay][count][1]}  score joueur: {listofwinners[partieplay][count][2]}  score ordinateur: {listofwinners[partieplay][count][3]}"
+      print(result)
+      if listofwinners[partieplay][count][2] >= highscore:
+        highscore = listofwinners[partieplay][count][2]
+        bestplayer = listofwinners[partieplay][count][1]
       count += 1
-    listofsuperwinner.append(listofwinners)
+    print("********************************************")
+    print(f"Et le meilleur joueur de cette partie est: {bestplayer} avec {highscore} de score\n")
 
-    print(f"Et le meilleur joueur est: {bestplayer}")
     newparty = input(f"Refaire une partie? (y/n)")
     if newparty.upper() != "Y":
+      #Si le jeu s'arrête ici, afficher les résultats
       clear()
-      supercount = 0
       print("\n######################-Résultats finaux-###########################\n")
-      for thing in listofsuperwinner:
-        count = 0
-        print(f"\n  *****************partie n°{supercount+1}*****************")
-        for thing in listofwinners:
-          result = f"  joueur: {listofsuperwinner[supercount][count][0]}  gagnant: {listofsuperwinner[supercount][count][1]}  score joueur: {listofsuperwinner[supercount][count][2]}  score ordinateur: {listofsuperwinner[supercount][count][3]}"
+      suphighscore = 0 #meilleur score inter-partie
+      supbestplayer = 0 #meilleur joueur inter-partie
+      partycount = 0 #comptage des parties
+      for party in listofwinners:
+        print(f"\n  *****************party n°{partycount+1}*****************")
+        highscore = 0 #meilleur score de la partie
+        bestplayer = 0 #meilleur joueur de la partie
+        playercount = 0 #comptage des joueurs
+        for player in listofwinners[partycount]:
+          result = f"  joueur: {listofwinners[partycount][playercount][0]}  gagnant: {listofwinners[partycount][playercount][1]}  score joueur: {listofwinners[partycount][playercount][2]}  score ordinateur: {listofwinners[partycount][playercount][3]}"
           print(result)
-          count += 1
-        count = 0
-        highscore = 0
-        for thing in listofwinners:
-          if listofwinners[count][2] >= highscore:
-            highscore = listofwinners[count][2]
-            bestplayer = listofwinners[count][1]
-          count += 1
-        print(f"  Meilleur joueur de cette partie: {bestplayer}")
-        print("  ********************************************\n")
-        supercount += 1
-      supercount = 0
-      for thing in listofsuperwinner:
-        count = 0
-        for thing in listofsuperwinner[supercount]:
-          if listofsuperwinner[supercount][count][2] >= highscore:
-            superhighscore = listofsuperwinner[supercount][count][2]
-            superbestplayer = listofsuperwinner[supercount][count][1]
-          count += 1
-        supercount += 1
-      print("\n###################################################################")
-      print(f"Et le SUPER MEILLEUR joueur inter-partie est {superbestplayer}")
-      print(listofsuperwinner)
 
+          #Si le joueur s'avère avoir un meilleur score que les précédents de la partie
+          if listofwinners[partycount][playercount][2] >= highscore:
+            highscore = listofwinners[partycount][playercount][2]
+            bestplayer = listofwinners[partycount][playercount][1]
+          
+          #Si le joueur s'avère avoir un meilleur score que tout les précédents inter-partie
+          if listofwinners[partycount][playercount][2] >= suphighscore:
+            if listofwinners[partycount][playercount][1] == supbestplayer:
+              suphighscore += listofwinners[partycount][playercount][2]
+            else:
+              suphighscore = listofwinners[partycount][playercount][2]
+              supbestplayer = listofwinners[partycount][playercount][1]
+
+          playercount += 1
+        print("  ********************************************")
+        print(f"  Meilleur joueur de la party: {bestplayer} avec {highscore} de score\n")
+        partycount += 1
+      print("\n###################################################################")
+      print(f"Meilleur joueur inter-party: {supbestplayer} avec {suphighscore} de score")
       rejouer = False
     else:
       j = 0
+      listofwinners.append([])
       partieplay += 1
       #reinitialiser le jeu
       plateauj = [] #plateau joueur
@@ -408,3 +412,4 @@ while rejouer:
       listo = [] #liste des bateaux en service de l'ordinateur
       dim(cotéplateau)
       clear()
+      #revient au début de la boucle eet relance une partie
