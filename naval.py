@@ -273,7 +273,7 @@ clear()
 #Lancement et déroulement de la partie
 def jouer_une_partie():
   global cotéplateau
-  #Si la partie n'est pas la première
+  #Si le joueur n'est pas le premier de la partie
   if j != 0:
     dim(cotéplateau)
   #Composition des plateaux
@@ -321,7 +321,7 @@ def jouer_une_partie():
 
 
 
-
+j = 0 #numéro du joueur
 partieplay = 0 #numéro de la partie en cours
 rejouer = True #si le joueur désire jouer
 listofwinners.append([]) #liste contenant les premiers résultats de la partie
