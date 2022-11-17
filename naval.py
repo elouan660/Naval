@@ -370,7 +370,7 @@ while rejouer:
         print(f"\n  *****************party n°{partycount+1}*****************")
         highscore = 0 #meilleur score de la partie
         bestplayer = 0 #meilleur joueur de la partie
-        playercount = 0 #comptage des joueurs
+        playercount = 0 #comptage des joueurs dans la partie
         for player in listofwinners[partycount]:
           result = f"  joueur: {listofwinners[partycount][playercount][0]}  gagnant: {listofwinners[partycount][playercount][1]}  score joueur: {listofwinners[partycount][playercount][2]}  score ordinateur: {listofwinners[partycount][playercount][3]}"
           print(result)
