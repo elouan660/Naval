@@ -203,7 +203,7 @@ def boom(case, plateau0, plateau1, nbrbat, link, listb):
     #Si cette case est touchée pour la première fois et qu'il n'y a rien sur celle-ci
     if plateau0[int(num)][int(lettre)] == "~~~":
         plateau1[int(num)][int(lettre)] = "~x~"
-        plateau0[int(num)][int(lettre)] = "~x~"
+        plateau0[int(num)][int(lettre)] = "~x~"#"dimensions" Définition des dimension du tableau
         print(f"\nManqué! (par {user})")
     #Si cette case est touchée pour la première fois et qu'il y a un bateau de taille 2 sur celle-ci    
     elif plateau0[int(num)][int(lettre)] == "[ ]" and case2.upper() in link:
