@@ -17,4 +17,5 @@ Si vous détruisez tous les bateaux adverses avant que les votres ne soient dét
 
 
 Mentions légales
+
 [Ship icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/ship)
