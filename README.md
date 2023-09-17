@@ -14,3 +14,7 @@ Si vous coulez un bateau adverse, votre score sera augmenté de 8
 Si vous tirez à coté d'un bateau adverse, votre score sera augmenté de 1
 
 Si vous détruisez tous les bateaux adverses avant que les votres ne soient détruit, c'est gagné
+
+
+Mentions légales
+[Ship icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/ship)

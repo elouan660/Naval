@@ -1,13 +1,29 @@
 # Ce programme appartient à Elouan Deschamps
-# Licence d'utilisation: https://www.gnu.org/licenses/gpl-3.0.html
+# Licence (licence.txt) normalement jointe à ce fichier, sinon consultez la à https://www.gnu.org/licenses/gpl-3.0.html
 # Projet scolaire de bataille navale NSI TG1 2023-2024 Livet
-# Penser à inclure des piles et des files
+# Code anglophone, variable et attributs en minuscules, classes en CamelCase, fonctions et méthodes en lowerCamelCase
+# Todo: Penser à inclure des piles et des files
 
 from random import *
 import os as os
-import pygame as pg
+import pygame as pygame
 
+
+#Initialisation
 alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+#Initialiser pygame
+pygame.init() 
+
+width = 800 #Largeur de la fenêtre
+height = 900 #Hauteur de la fenêtre
+screen = pygame.display.set_mode((width,height)) #Créer une fenêtre
+pygame.display.set_caption(f"naval660 - {os.getlogin()}") #Définir le titre de la fenêtre
+icon = 
+
+clock = pygame.time.Clock() #Horloge qui va servir à réguler la rapidité du jeu
+
+background = pygame.Surface((width, height))
+background.fill("White")
 
 
 #Classe permettant la génération de plateaux de Jeu
@@ -25,6 +41,7 @@ class Board:
             self.x = x #Position en x de la case
             self.y = y #Position en y de la case
             self.boat_state = boat_state # 0 -> absence de bateau, 1 -> bateau vivant, 2 -> bateau coulé
+            self.links = [] # Liste des liens avec d'autres cases (bateaux multi-cases)
         def __repr__(self): #retourner les coordonnées en cas de print
             return f"({self.x};{self.y})"
         def getBoatState(self): # Obtenir l'état du bateau
@@ -71,35 +88,31 @@ class Board:
             if cell.getCoord()[0] == self.current_x:
                 print(f"{cell.getTextCell()}  ", end="")
                 
+def gameLoop():
+    running = True #Indique que le Jeu est en cours
+    print("Jeu en cours")
+    while running:
+        for event in pygame.event.get(): #Vérifier chaque évenement "extérieur"
+            if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
+                running = False #Arrêter le Jeu
+
+
+        screen.blit(background, (0,0))
+        clock.tick(60) #Ne pas dépasser 60 images par seconde
+        pygame.display.update() #Rafraichir l'écran
+    pygame.quit()
+    print("Jeu fermé ")
 
 
 
 
-
-        
-
-
-
-        """
-        #Affichage des nombres et des cases
-        count = 1 #et non 0 car l'affichage commence a 1
-        for el in plateau:
-            if count <= 9:
-                print(f"{count}  | ", end="")
-            else:
-                print(f"{count} | ", end="")
-            for el1 in el:
-                print(f"{el1}  ", end="")
-            print("|\n")
-            count += 1
-        """
 
 player_board = Board(3, "elouan")
 #player_board.showBoard()
 for line in player_board.cells_list:
     print(line)
 
-
+gameLoop()
 
 
 
