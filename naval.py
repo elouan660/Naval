@@ -14,23 +14,31 @@ alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', '
 #Initialiser pygame
 pygame.init() 
 
-width = 800 #Largeur de la fenêtre
+width = 900 #Largeur de la fenêtre
 height = 900 #Hauteur de la fenêtre
+
+top = 0 #Pour placer des éléments dans la partie supérieure du plateau
+bottom = height/2 #Pour placer des éléments dans la partie inférieure du plateau
+
 screen = pygame.display.set_mode((width,height)) #Créer une fenêtre
+#screen.fill("White")
+
 pygame.display.set_caption(f"naval660 - {os.getlogin()}") #Définir le titre de la fenêtre
-icon = 
+icon = pygame.image.load("assets/img/cruise.png") #Charger l'image qui servira d'icone
+pygame.display.set_icon(icon) #Définir l'icone
+
+default_font = pygame.font.Font(None, 50) #Charger la police par défaut de pygame
 
 clock = pygame.time.Clock() #Horloge qui va servir à réguler la rapidité du jeu
 
-background = pygame.Surface((width, height))
-background.fill("White")
 
 
 #Classe permettant la génération de plateaux de Jeu
 class Board:
 
-    def __init__(self, width, user):
+    def __init__(self, width, user, position=0):
         self.width = width #Largeur en case du plateau
+
         self.user = user 
         self.cells_list = [] #Contenu du plateau
         self.makeBoard() #remplir le plateau de cases
@@ -87,8 +95,24 @@ class Board:
             self.current_y += 1
             if cell.getCoord()[0] == self.current_x:
                 print(f"{cell.getTextCell()}  ", end="")
+    
+    def graphShowBoard(self, position):
+        self.top_jump = 0
+        self.left_jump = 20
+        if position == height/2:
+            self.top_jump = 20
+        elif position == 0:
+            self.top_jump = -20
+
+        self.water = pygame.image.load("assets/img/water.png") #charger le fond du plateau courant
+        self.water = pygame.transform.scale(self.water, (width-300, (height/2)-self.top_jump)) #Redimensionner l'image
+        self.board_background = pygame.Surface((width, (height/2)))
+        self.board_background.fill("White")
+        self.board_background.blit(self.water, pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
+        screen.blit(self.board_background, (0, position)) 
+
                 
-def gameLoop():
+def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
     running = True #Indique que le Jeu est en cours
     print("Jeu en cours")
     while running:
@@ -96,8 +120,8 @@ def gameLoop():
             if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
                 running = False #Arrêter le Jeu
 
-
-        screen.blit(background, (0,0))
+        board_1.graphShowBoard(top)
+        board_0.graphShowBoard(bottom)
         clock.tick(60) #Ne pas dépasser 60 images par seconde
         pygame.display.update() #Rafraichir l'écran
     pygame.quit()
@@ -108,11 +132,12 @@ def gameLoop():
 
 
 player_board = Board(3, "elouan")
+computer_board = Board(3, "computer")
 #player_board.showBoard()
 for line in player_board.cells_list:
     print(line)
 
-gameLoop()
+gameLoop(player_board, computer_board)
 
 
 
