@@ -51,7 +51,7 @@ class Board:
             self.boat_state = boat_state # 0 -> absence de bateau, 1 -> bateau vivant, 2 -> bateau coulé
             self.links = [] # Liste des liens avec d'autres cases (bateaux multi-cases)
         def __repr__(self): #retourner les coordonnées en cas de print
-            return f"({self.x};{self.y})"
+            return f"({self.x};{self.y});{self.links}"
         def getBoatState(self): # Obtenir l'état du bateau
             return self.boat_state
         def getCoord(self): # Obtenir les coordonées de la case
@@ -78,28 +78,14 @@ class Board:
             self.y_count += 1 #Passer à la ligne suivante
             self.x_count = 0 #Revenir à colonne
 
-    def showBoard(self):
+    def makeLink(self, cell0, cell1): #Lier deux cellules, pour des bateaux à deux cases
+        self.cells_list[cell0[0]][cell0[1]].links.append(cell1)
+        self.cells_list[cell1[0]][cell1[1]].links.append(cell0)
 
-        #Affichage des lettres
-        self.count = 0
-        print(f"  [vue du plateau {self.user}]\n      ", end="") #Afficher le nom du plateau
-        for i in range(self.width): #Afficher autant de lettres que le coté du plateau
-            print(f"{alpha[self.count]}    ", end="")
-            self.count += 1 #Passer à la lettre suivante
-        print("\n")
-
-        self.current_x = 0 #Colonne courante
-        self.current_y = 0 #Ligne courante
-        for cell in self.cells_list:
-            print(f"\n{self.current_y}  | ", end="")
-            self.current_y += 1
-            if cell.getCoord()[0] == self.current_x:
-                print(f"{cell.getTextCell()}  ", end="")
-    
     def graphShowBoard(self, position):
         self.top_jump = 0 #Décalage en hauteur
         self.left_jump = 0 #Décalage en largeur
-        self.color = "White"
+        self.color = "Red"
         if position == height/2:
             #self.top_jump = 20
             self.color = "Blue"
@@ -109,20 +95,28 @@ class Board:
         self.bord_height = (height/2)-self.top_jump
 
         self.water = pygame.image.load("assets/img/water.png") #charger le fond du plateau courant
+        self.submarine = pygame.image.load("assets/img/ShipSubMarineHull.png")
+        self.patrol = pygame.image.load("assets/img/ShipPatrolHull.png")
+
         self.water = pygame.transform.scale(self.water, (self.bord_width, self.bord_height)) #Redimensionner l'image
         self.board_background = pygame.Surface((width, (height/2))) 
         self.board_background.fill(self.color)
-        self.board_background.blit(self.water, pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
+        self.board_background.blit(self.water, (0,0)) #pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
 
+        #Dessiner des lignes de haut en bas
         gap = int(self.bord_width/self.width)-15
         for i in range(self.width):
-            pygame.draw.line(self.board_background, "black", (0, gap), (self.bord_width, gap), 3)
+            pygame.draw.line(self.board_background, "black", (0, gap), (self.bord_width, gap), 2)
             gap += int(self.bord_width/self.width)
+        #Dessiner des lignes de gauche à droite
         gap = int(self.bord_width/self.width)
         for i in range(self.width-1):
-            pygame.draw.line(self.board_background, "black", (gap, 0), (gap, self.bord_width), 3)
+            pygame.draw.line(self.board_background, "black", (gap, 0), (gap, self.bord_width), 2)
             gap += int(self.bord_width/self.width)
+        
+        self.board_background.blit(self.submarine, (90,0))
         screen.blit(self.board_background, (0, position)) #Afficher le plateau en haut ou en bas
+
 
         
 
@@ -137,7 +131,7 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 
         board_1.graphShowBoard(top)
         board_0.graphShowBoard(bottom)
-        pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 1)
+        pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 3)
         clock.tick(20) #FPS bas mais stables pour ménager le processeur
         pygame.display.update() #Rafraichir l'écran
     pygame.quit()
@@ -150,6 +144,7 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 player_board = Board(5, "elouan")
 computer_board = Board(5, "computer")
 #player_board.showBoard()
+player_board.makeLink((0,0),(1,1))
 for line in player_board.cells_list:
     print(line)
 
