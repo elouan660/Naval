@@ -14,7 +14,7 @@ alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', '
 #Initialiser pygame
 pygame.init() 
 
-width = 900 #Largeur de la fenêtre
+width = 900 #Largeur de la fenêtre, Ne doit pas être inférieur à 900
 height = 900 #Hauteur de la fenêtre
 
 top = 0 #Pour placer des éléments dans la partie supérieure du plateau
@@ -97,19 +97,34 @@ class Board:
                 print(f"{cell.getTextCell()}  ", end="")
     
     def graphShowBoard(self, position):
-        self.top_jump = 0
-        self.left_jump = 20
+        self.top_jump = 0 #Décalage en hauteur
+        self.left_jump = 0 #Décalage en largeur
+        self.color = "White"
         if position == height/2:
-            self.top_jump = 20
-        elif position == 0:
-            self.top_jump = -20
+            #self.top_jump = 20
+            self.color = "Blue"
+        #elif position == 0:
+            #self.top_jump = 20
+        self.bord_width = width-300
+        self.bord_height = (height/2)-self.top_jump
 
         self.water = pygame.image.load("assets/img/water.png") #charger le fond du plateau courant
-        self.water = pygame.transform.scale(self.water, (width-300, (height/2)-self.top_jump)) #Redimensionner l'image
-        self.board_background = pygame.Surface((width, (height/2)))
-        self.board_background.fill("White")
+        self.water = pygame.transform.scale(self.water, (self.bord_width, self.bord_height)) #Redimensionner l'image
+        self.board_background = pygame.Surface((width, (height/2))) 
+        self.board_background.fill(self.color)
         self.board_background.blit(self.water, pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
-        screen.blit(self.board_background, (0, position)) 
+
+        gap = int(self.bord_width/self.width)-15
+        for i in range(self.width):
+            pygame.draw.line(self.board_background, "black", (0, gap), (self.bord_width, gap), 3)
+            gap += int(self.bord_width/self.width)
+        gap = int(self.bord_width/self.width)
+        for i in range(self.width-1):
+            pygame.draw.line(self.board_background, "black", (gap, 0), (gap, self.bord_width), 3)
+            gap += int(self.bord_width/self.width)
+        screen.blit(self.board_background, (0, position)) #Afficher le plateau en haut ou en bas
+
+        
 
                 
 def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
@@ -122,7 +137,8 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 
         board_1.graphShowBoard(top)
         board_0.graphShowBoard(bottom)
-        clock.tick(60) #Ne pas dépasser 60 images par seconde
+        pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 1)
+        clock.tick(20) #FPS bas mais stables pour ménager le processeur
         pygame.display.update() #Rafraichir l'écran
     pygame.quit()
     print("Jeu fermé ")
@@ -131,13 +147,10 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 
 
 
-player_board = Board(3, "elouan")
-computer_board = Board(3, "computer")
+player_board = Board(5, "elouan")
+computer_board = Board(5, "computer")
 #player_board.showBoard()
 for line in player_board.cells_list:
     print(line)
 
 gameLoop(player_board, computer_board)
-
-
-
