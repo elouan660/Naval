@@ -56,16 +56,6 @@ class Board:
             return self.boat_state
         def getCoord(self): # Obtenir les coordonées de la case
             return (self.x, self.y)
-        def getTextCell(self): #Obtenir une représentation de l'état du bateau
-            if self.boat_state == 0:
-                self.text_cell = "~~~"
-            elif self.boat_state == 1:
-                self.text_cell = "[ ]"
-            elif self.boat_state == 2:
-                self.text_cell = "[X]"
-            else:
-                self.text_cell = -1 #En cas d'erreur
-            return self.text_cell
     
     def makeBoard(self): #Créer les cases et les ranger dans le plateau
         self.x_count = 0 #Colonne courante
@@ -78,9 +68,25 @@ class Board:
             self.y_count += 1 #Passer à la ligne suivante
             self.x_count = 0 #Revenir à colonne
 
-    def makeLink(self, cell0, cell1): #Lier deux cellules, pour des bateaux à deux cases
-        self.cells_list[cell0[0]][cell0[1]].links.append(cell1)
-        self.cells_list[cell1[0]][cell1[1]].links.append(cell0)
+    def makeLink(self, celltab): #Permet de lier des cellules entre elles
+        for cell0 in celltab:
+            for cell1 in celltab:
+                if cell1 != cell0: #Rien ne sert qu'une cellule soit liée à elle-même
+                    self.cells_list[cell0[1]][cell0[0]].links.append(cell1) #puisque dans cells_list chaque tableau correspond à y
+    def placeBoat(self, boatcell, boatsize):
+        linked_cells = []
+        boatcell_x = boatcell[0]
+        boatcell_y = boatcell[1]
+        if boatcell_y + boatsize <= self.width and boatcell_x <= self.width:
+            count = 0
+            for i in range(boatsize):
+                linked_cells.append((boatcell_x, boatcell_y+count))
+                count += 1
+            self.makeLink(linked_cells)
+        else:
+            print("Le bateau dépasse du plateau!")
+
+
 
     def graphShowBoard(self, position):
         self.top_jump = 0 #Décalage en hauteur
@@ -104,16 +110,17 @@ class Board:
         self.board_background.blit(self.water, (0,0)) #pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
 
         #Dessiner des lignes de haut en bas
-        gap = int(self.bord_width/self.width)-15
-        for i in range(self.width):
+        gap = int(self.bord_width/self.width)-16 #
+        for i in range(self.width-1): #Rien ne sert de faire une ligne en dehors de l'écran
             pygame.draw.line(self.board_background, "black", (0, gap), (self.bord_width, gap), 2)
             gap += int(self.bord_width/self.width)
         #Dessiner des lignes de gauche à droite
         gap = int(self.bord_width/self.width)
-        for i in range(self.width-1):
+        for i in range(self.width): #Pour séparer le plateau de la zone d'information
             pygame.draw.line(self.board_background, "black", (gap, 0), (gap, self.bord_width), 2)
             gap += int(self.bord_width/self.width)
         
+        #essai technique
         self.board_background.blit(self.submarine, (90,0))
         screen.blit(self.board_background, (0, position)) #Afficher le plateau en haut ou en bas
 
@@ -144,7 +151,8 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 player_board = Board(5, "elouan")
 computer_board = Board(5, "computer")
 #player_board.showBoard()
-player_board.makeLink((0,0),(1,1))
+#player_board.makeLink([(0,0),(1,1),(3,4)])
+player_board.placeBoat((0,2), 3)
 for line in player_board.cells_list:
     print(line)
 
