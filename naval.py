@@ -28,17 +28,18 @@ pygame.display.set_caption(f"naval660 - {os.getlogin()}") #Définir le titre de 
 #Charger des assets
 icon = pygame.image.load("assets/img/cruise.png") #Charger l'image qui servira d'icone
 water = pygame.image.load("assets/img/water.png")
+cross = pygame.transform.scale(pygame.image.load("assets/img/cross.png"), (50,50))
 #Bateaux
 submarine = pygame.image.load("assets/img/ShipSubMarineHull.png")
 patrol = pygame.image.load("assets/img/ShipPatrolHull.png")
 carrier = pygame.image.load("assets/img/ShipCarrierHull.png")
 #Animations
 explosion = [] #Liste contenant les images de l'animation d'explosion
-d = 1
+number = 1
 for i in range(12):
-    explosion.append(pygame.image.load(f"assets/img/explosion-1-d/explosion-d{d}.png"))
-    d += 1
-d = 0
+    explosion.append(pygame.image.load(f"assets/img/explosion-1-d/explosion-d{number}.png"))
+    number += 1
+number = 0
 
 
 pygame.display.set_icon(icon) #Définir l'icone
@@ -52,9 +53,10 @@ clock = pygame.time.Clock() #Horloge qui va servir à réguler la rapidité du j
 #Classe permettant la génération de plateaux de Jeu
 class Board:
     #Les coordonnées des cellules seront données aux méthodes et fonctions sous la forme de tuple (x,y)
-    def __init__(self, width, user, position=0):
+    def __init__(self, width, user, position):
         self.width = width #Largeur en case du plateau
         self.user = user 
+        self.position = position
         self.cells_list = [] #Contenu du plateau
         self.makeBoard() #remplir le plateau de cases
 
@@ -64,7 +66,7 @@ class Board:
             self.x = x #Position en x de la case
             self.y = y #Position en y de la case
             self.boat_state = boat_state # 0 -> absence de bateau, 1 -> bateau vivant, 2 -> bateau coulé
-            self.boat_size = boat_size
+            self.boat_size = boat_size #taille du bateau présent sur la case racine, utile pour l'affichage graphique
             self.links = [] # Liste des liens avec d'autres cases (bateaux multi-cases)
         def __repr__(self): #retourner les coordonnées en cas de print
             return f"({self.x};{self.y});{self.links}"
@@ -97,7 +99,7 @@ class Board:
         if boatcell_y + boatsize <= self.width and boatcell_x <= self.width: #Vérifier que le bateau ne dépassera pas du plateau
             count = 0
             for i in range(boatsize):
-                if len(self.cells_list[boatcell_y+count][boatcell_x].links) == 0: #Si la case à lier n'est pas déjà liée à une autre
+                if len(self.cells_list[boatcell_y+count][boatcell_x].links) == 0 and self.cells_list[boatcell_y+count][boatcell_x].boat_state == 0: #Si un bateau n'est pas déjà sur cette case
                     linked_cells.append((boatcell_x, boatcell_y+count))
                 else:
                     linkable = False
@@ -107,22 +109,55 @@ class Board:
                 self.cells_list[boatcell_y][boatcell_x].boat_state = 1 #permet d'indiquer qu'un bateau prend racine sur cette case
                 self.cells_list[boatcell_y][boatcell_x].boat_size = boatsize
                 self.makeLink(linked_cells)
+                return 1
+            else:
+                return -1
         else:
             print("placeBoat: Le bateau dépasse du plateau!")
+            return -1
     
-    def graphShowBoard(self, position):
+    def detectCellWithCos(self, mousecos): #permet de réu
+        cellsize = (width-300)//self.width
+        if self.position == top:
+            gap = 0
+        else:
+            gap = 5
+        return (mousecos[0]//cellsize, ((mousecos[1])//cellsize)-gap)
+
+    def detectCosWithCell(self, cellcos): #Retrouver en multipliant les coordonnées plateau par les coordonnées réelles les corrdonnées du centre d'une case
+        cellsize = (width-300)//self.width
+        if self.position == top: #Corrections relatives à la position du plateau
+            gap = 0
+            gap2 = 100
+        else:
+            gap = 5
+            gap2 = 600
+        return (((cellcos[0]*cellsize)-cellsize//2)+100, ((((cellcos[1])*cellsize)+gap)-cellsize//2)+gap2) 
+
+    def destroyBoat(self, selected_cell):
+        cells_to_destroy = []
+        if len(self.cells_list[selected_cell[1]][selected_cell[0]].links) != 0 or self.cells_list[selected_cell[1]][selected_cell[0]].boat_state == 1:
+            cells_to_destroy.append(selected_cell)
+            for cell in self.cells_list[selected_cell[1]][selected_cell[0]].links:
+                cells_to_destroy.append(cell)
+        print(cells_to_destroy)
+        for cell in cells_to_destroy:
+            self.cells_list[cell[1]][cell[0]].boat_state = 2
+        
+
+
+    def graphShowBoard(self, visible=True):
         self.top_jump = 0 #Décalage en hauteur
         self.left_jump = 0 #Décalage en largeur
         self.color = "Red"
-        if position == height/2:
+        if self.position == height/2:
             #self.top_jump = 20
             self.color = "Blue"
         #elif position == 0:
             #self.top_jump = 20
         self.bord_width = width-300
-        self.bord_height = width-300
 
-        self.water = pygame.transform.scale(water, (self.bord_width, self.bord_height)) #Redimensionner l'image
+        self.water = pygame.transform.scale(water, (self.bord_width, self.bord_width)) #Redimensionner l'image
         self.board_background = pygame.Surface((width, (height/2))) 
         self.board_background.fill(self.color)
         self.board_background.blit(self.water, (0,0)) #pygame.Rect(self.left_jump, self.top_jump, 0, 0)) #Afficher l'image
@@ -143,7 +178,7 @@ class Board:
         current_y = int(self.bord_width/self.width)/2
         for tab in self.cells_list:
             for cell in tab:
-                if cell.boat_state == 1:
+                if cell.boat_state == 1 and visible:
                     nb_cases_linked = len(cell.links)
                     #print(f"{cell} - {nb_cases_linked}")
                     if nb_cases_linked == 0:
@@ -152,40 +187,63 @@ class Board:
                         self.board_background.blit(submarine, (current_x-15, current_y-20))
                     elif nb_cases_linked == 2:
                         self.board_background.blit(carrier, (current_x-20, current_y))
-
-                    #elif nb_cases_linked == 2:
-                     #   self.board_background.blit(self.)
-
+                if cell.boat_state == 2:
+                    self.board_background.blit(cross, (current_x-25, current_y-25))
 
                 current_x += int(self.bord_width/self.width)
             current_x = int(self.bord_width/self.width)/2
             current_y += int(self.bord_width/self.width)
 
+        screen.blit(self.board_background, (0, self.position)) #Afficher le plateau en haut ou en bas
 
 
+#Afficher le plateau
+def ShowGlobalBoard(board_0, board_1, phase):
+    board_0.graphShowBoard()
+    board_1.graphShowBoard()
+    pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 3)
+    clock.tick(20)
+    pygame.display.update()
 
 
-        #essai technique
-        #self.board_background.blit(self.submarine, (90,0))
-        screen.blit(self.board_background, (0, position)) #Afficher le plateau en haut ou en bas
+#Premier tour du joueur
+def FisrtplayerTurn(myboard, otherboard):
+    selected = 1
+    while selected <= 3:
+        for event in pygame.event.get(): #Vérifier chaque évenement "extérieur", indispensable pour l'interactivité souris
+            pass
+        ShowGlobalBoard(myboard, otherboard)
+        mouse_position = pygame.mouse.get_pos()
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:
+            print("detected")
+            selected_case = myboard.detectCellWithCos(mouse_position)
+            print(selected_case)
+            if myboard.placeBoat(selected_case, selected) == 1:
+                selected += 1
+                print(selected)
 
 
+def GlobalTurn():
+    pass
         
 
                 
 def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
     running = True #Indique que le Jeu est en cours
+    isfirst = True
     print("gameLoop: Jeu en cours")
     while running:
+        if isfirst:
+            FisrtplayerTurn(board_0, board_1)
+        isfirst = False
+        mouse_position = pygame.mouse.get_pos() #Position de la souris sous la forme d'un tuple (x;y)
+        mouse_buttons = pygame.mouse.get_pressed()
         for event in pygame.event.get(): #Vérifier chaque évenement "extérieur"
             if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
                 running = False #Arrêter le Jeu
-
-        board_1.graphShowBoard(top)
-        board_0.graphShowBoard(bottom)
-        pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 3)
-        clock.tick(20) #FPS bas mais stables pour ménager le processeur
-        pygame.display.update() #Rafraichir l'écran
+        #board_0.destroyBoat((1,0))
+        ShowGlobalBoard(board_0, board_1)
     pygame.quit()
     print("gameLoop: Jeu fermé ")
 
@@ -193,15 +251,15 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 
 
 
-player_board = Board(5, "elouan")
-computer_board = Board(5, "computer")
+player_board = Board(5, "elouan", bottom)
+computer_board = Board(5, "computer", top)
 #player_board.showBoard()
 #player_board.makeLink([(0,0),(1,1),(3,4)])
 #player_board.placeBoat((0,2), 3)
-player_board.placeBoat((1,0), 3)
-player_board.placeBoat((1,1), 2)
-computer_board.placeBoat((0,2),1)
+#player_board.placeBoat((1,0), 3)
+#player_board.placeBoat((0,2), 2)
+#player_board.placeBoat((0,1),1)
+#computer_board.placeBoat((0,2),1)
 for line in player_board.cells_list:
     print(line)
-
 gameLoop(player_board, computer_board)
