@@ -93,28 +93,23 @@ class Board:
         linked_cells = [] #Liste des cellules à lier
         boatcell_x = boatcell[0] #permet de séparer le tuple
         boatcell_y = boatcell[1]
-        linkable = True
-        """
-        self.cells_list[boatcell_y][boatcell_x].boat_state = 1 #permet d'indiquer qu'un bateau prend racine sur cette case
-        self.cells_list[boatcell_y][boatcell_x].boat_size = boatsize
-        """
+        linkable = True #Indique que jusqu'à présent il n'y a aucun problème pour la liaison entre les cases
         if boatcell_y + boatsize <= self.width and boatcell_x <= self.width: #Vérifier que le bateau ne dépassera pas du plateau
             count = 0
             for i in range(boatsize):
-                if len(self.cells_list[boatcell_y+count][boatcell_x].links) == 0:
+                if len(self.cells_list[boatcell_y+count][boatcell_x].links) == 0: #Si la case à lier n'est pas déjà liée à une autre
                     linked_cells.append((boatcell_x, boatcell_y+count))
                 else:
                     linkable = False
-                    print("Le bateau en chevauche un autre!")
+                    print("placeBoat: Le bateau en chevauche un autre!")
                 count += 1
             if linkable:
                 self.cells_list[boatcell_y][boatcell_x].boat_state = 1 #permet d'indiquer qu'un bateau prend racine sur cette case
                 self.cells_list[boatcell_y][boatcell_x].boat_size = boatsize
                 self.makeLink(linked_cells)
         else:
-            print("Le bateau dépasse du plateau!")
+            print("placeBoat: Le bateau dépasse du plateau!")
     
-
     def graphShowBoard(self, position):
         self.top_jump = 0 #Décalage en hauteur
         self.left_jump = 0 #Décalage en largeur
@@ -180,7 +175,7 @@ class Board:
                 
 def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
     running = True #Indique que le Jeu est en cours
-    print("Jeu en cours")
+    print("gameLoop: Jeu en cours")
     while running:
         for event in pygame.event.get(): #Vérifier chaque évenement "extérieur"
             if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
@@ -192,7 +187,7 @@ def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
         clock.tick(20) #FPS bas mais stables pour ménager le processeur
         pygame.display.update() #Rafraichir l'écran
     pygame.quit()
-    print("Jeu fermé ")
+    print("gameLoop: Jeu fermé ")
 
 
 
@@ -204,7 +199,7 @@ computer_board = Board(5, "computer")
 #player_board.makeLink([(0,0),(1,1),(3,4)])
 #player_board.placeBoat((0,2), 3)
 player_board.placeBoat((1,0), 3)
-player_board.placeBoat((0,1), 2)
+player_board.placeBoat((1,1), 2)
 computer_board.placeBoat((0,2),1)
 for line in player_board.cells_list:
     print(line)
