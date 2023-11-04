@@ -1,16 +1,14 @@
 # Ce programme appartient à Elouan Deschamps
 # Licence (licence.txt) normalement jointe à ce fichier, sinon consultez la à https://www.gnu.org/licenses/gpl-3.0.html
 # Projet scolaire de bataille navale NSI TG1 2023-2024 Livet
-# Code anglophone, variable et attributs en minuscules, classes en CamelCase, fonctions et méthodes en lowerCamelCase
+# Code anglophone, variable et attributs en minuscules, classes et fonctions en CamelCase, méthodes en lowerCamelCase
 # Todo: Penser à inclure des piles et des files
 
-from random import *
+import random as random
 import os as os
 import pygame as pygame
 
 
-#Initialisation
-alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 #Initialiser pygame
 pygame.init() 
 
@@ -40,6 +38,8 @@ for i in range(12):
     explosion.append(pygame.image.load(f"assets/img/explosion-1-d/explosion-d{number}.png"))
     number += 1
 number = 0
+#Polices
+bitstream = pygame.font.SysFont("Bitstream Charter", 30)
 
 
 pygame.display.set_icon(icon) #Définir l'icone
@@ -55,8 +55,10 @@ class Board:
     #Les coordonnées des cellules seront données aux méthodes et fonctions sous la forme de tuple (x,y)
     def __init__(self, width, user, position):
         self.width = width #Largeur en case du plateau
+        self.life = 3 #Points de vie
         self.user = user 
-        self.position = position
+        self.score = 0
+        self.position = position #En haut ou en bas
         self.cells_list = [] #Contenu du plateau
         self.makeBoard() #remplir le plateau de cases
 
@@ -109,9 +111,9 @@ class Board:
                 self.cells_list[boatcell_y][boatcell_x].boat_state = 1 #permet d'indiquer qu'un bateau prend racine sur cette case
                 self.cells_list[boatcell_y][boatcell_x].boat_size = boatsize
                 self.makeLink(linked_cells)
-                return 1
+                return 1 #Si le bateau a bien pu être placé
             else:
-                return -1
+                return -1 #Si une erreur s'est produite
         else:
             print("placeBoat: Le bateau dépasse du plateau!")
             return -1
@@ -135,14 +137,20 @@ class Board:
         return (((cellcos[0]*cellsize)-cellsize//2)+100, ((((cellcos[1])*cellsize)+gap)-cellsize//2)+gap2) 
 
     def destroyBoat(self, selected_cell):
-        cells_to_destroy = []
-        if len(self.cells_list[selected_cell[1]][selected_cell[0]].links) != 0 or self.cells_list[selected_cell[1]][selected_cell[0]].boat_state == 1:
-            cells_to_destroy.append(selected_cell)
-            for cell in self.cells_list[selected_cell[1]][selected_cell[0]].links:
-                cells_to_destroy.append(cell)
-        print(cells_to_destroy)
-        for cell in cells_to_destroy:
-            self.cells_list[cell[1]][cell[0]].boat_state = 2
+        try:
+            cells_to_destroy = []
+            score = 0 #score gagné par l'adversaire lors de cette attaque
+            if len(self.cells_list[selected_cell[1]][selected_cell[0]].links) != 0 or self.cells_list[selected_cell[1]][selected_cell[0]].boat_state == 1: #si un bateau se trouve sur cette case
+                cells_to_destroy.append(selected_cell)
+                for cell in self.cells_list[selected_cell[1]][selected_cell[0]].links:
+                    cells_to_destroy.append(cell)
+            print(cells_to_destroy)
+            for cell in cells_to_destroy:
+                self.cells_list[cell[1]][cell[0]].boat_state = 2
+            self.life -= 1
+            return  #indique que tout s'est bien passé
+        except IndexError:
+            return -1 #Indique qu'une erreur a empêché le bon fonctionnement de la méthode
         
 
 
@@ -197,69 +205,146 @@ class Board:
         screen.blit(self.board_background, (0, self.position)) #Afficher le plateau en haut ou en bas
 
 
-#Afficher le plateau
-def ShowGlobalBoard(board_0, board_1, phase):
+#Afficher le plateau en globalité
+def ShowGlobalBoard(board_0, board_1, phase, user, pos="center"):
     board_0.graphShowBoard()
-    board_1.graphShowBoard()
+    board_1.graphShowBoard(False)
     pygame.draw.line(screen, "black", (0, int(height/2)), (width, int(height/2)), 3)
+    #Afficher des informations concernant le tour
+     #Affichage du tour courant
+    diplayed_phase = bitstream.render(phase, True, (0,0,0), "white") #Texte noir sur fond blanc
+    center_phase = diplayed_phase.get_rect()
+    center_phase.center = ((width-300)//2, height//2) #centrer le texte entre les deux plateaux
+    screen.blit(diplayed_phase, center_phase)
+
+    if user == os.getlogin():
+        playercolor = (0,0,255)
+        computercolor = (0,0,0)
+    else:
+        playercolor = (0,0,0)
+        computercolor = (0,0,255)
+
+     #Affichage des informations joueur
+    diplayed_player = bitstream.render(os.getlogin(), True, playercolor, "white")
+    center_player = diplayed_player.get_rect()
+    center_player.center = (width-150, (height//2)+12)
+    screen.blit(diplayed_player, center_player)
+      #Score
+    player_score = bitstream.render(f"score: {board_0.score}", True, (0,0,0))
+    player_score_rect = player_score.get_rect()
+    player_score_rect.x = (width-300)+50
+    player_score_rect.y = (height//2)+50
+    screen.blit(player_score, player_score_rect)
+      #vies
+    player_life = bitstream.render(f"vies: {board_0.life}", True, (0,0,0))
+    player_life_rect = player_life.get_rect()
+    player_life_rect.x = (width-300)+50
+    player_life_rect.y = (height//2)+65
+    screen.blit(player_life, player_life_rect)
+
+     #Affichage des informations ordinateur
+    diplayed_computer = bitstream.render("Ordinateur", True, computercolor, "white")
+    center_computer = diplayed_computer.get_rect()
+    center_computer.center = (width-150, 10)
+    screen.blit(diplayed_computer, center_computer)
+      #Score
+    computer_score = bitstream.render(f"score: {board_0.score}", True, (0,0,0))
+    computer_score_rect = computer_score.get_rect()
+    computer_score_rect.x = (width-300)+50
+    computer_score_rect.y = 50
+    screen.blit(computer_score, computer_score_rect)
+      #vies
+    computer_life = bitstream.render(f"vies: {board_0.life}", True, (0,0,0))
+    computer_life_rect = computer_life.get_rect()
+    computer_life_rect.x = (width-300)+50
+    computer_life_rect.y = 65
+    screen.blit(computer_life, computer_life_rect)
+    
+
+    #Rafraichir l'écran
     clock.tick(20)
     pygame.display.update()
 
 
 #Premier tour du joueur
-def FisrtplayerTurn(myboard, otherboard):
+def FirstPlayerTurn(myboard, otherboard):
     selected = 1
-    while selected <= 3:
+    exit_signal = 1 #Indique que tout s'est bien déroulé
+    while selected <= 3: #Tant que trois bateaux n'ont pas été placés
         for event in pygame.event.get(): #Vérifier chaque évenement "extérieur", indispensable pour l'interactivité souris
-            pass
-        ShowGlobalBoard(myboard, otherboard)
+            if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
+                exit_signal = 2 #Indique une interruption de la part de l'utilisateur
+                print("FirstplayerTurn: Signal d'arrêt envoyé")
+                selected = 4
+        ShowGlobalBoard(myboard, otherboard, "Placement des bateaux", os.getlogin())
         mouse_position = pygame.mouse.get_pos()
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
             print("detected")
-            selected_case = myboard.detectCellWithCos(mouse_position)
+            selected_case = myboard.detectCellWithCos(mouse_position) #Convertir les coordonnées de la souris en case
             print(selected_case)
             if myboard.placeBoat(selected_case, selected) == 1:
                 selected += 1
                 print(selected)
+    return exit_signal
+
+#Permettre à l'utilisateur d'attaquer l'adversaire
+def PlayerAttack(myboard, otherboard):
+    selected = 0
+    exit_signal = 1 #Indique que tout s'est bien déroulé
+    while selected != 1:
+        for event in pygame.event.get(): #Vérifier chaque évenement "extérieur", indispensable pour l'interactivité souris
+            if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
+                exit_signal = 2 #Indique une interruption de la part de l'utilisateur
+                print("Player: Signal d'arrêt envoyé")
+                selected = 1
+        ShowGlobalBoard(myboard, otherboard, "À l'attaque!", os.getlogin())
+        mouse_position = pygame.mouse.get_pos()
+        mouse_buttons = pygame.mouse.get_pressed()
+        if mouse_buttons[0]:
+            print("detected")
+            selected_case = otherboard.detectCellWithCos(mouse_position) #Convertir les coordonnées de la souris en case
+            print(selected_case)
+            if otherboard.destroyBoat(selected_case) != -1: #Si le bateau a bien pu être détruit
+                selected = 1
+    return exit_signal
+
+def ComputerAttack(itsboard, otherboard):
+    otherboard.destroyBoat((random.randrange(0, 4, 1), random.randrange(0, 4, 1)))
 
 
-def GlobalTurn():
-    pass
-        
+def FirstcomputerTurn(itsboard):
+    selected = 1
+    while selected <= 3: #Tant que trois bateaux n'ont pas été placés, usage d'une 
+        selected_case = (random.randrange(0, 4, 1), random.randrange(0, 4, 1))
+        if itsboard.placeBoat(selected_case, selected) == 1: #Si le bateau a bien pu être placé
+            selected += 1
+   
 
                 
-def gameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
+def GameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
     running = True #Indique que le Jeu est en cours
     isfirst = True
-    print("gameLoop: Jeu en cours")
+    print("GameLoop: Jeu en cours")
     while running:
-        if isfirst:
-            FisrtplayerTurn(board_0, board_1)
-        isfirst = False
-        mouse_position = pygame.mouse.get_pos() #Position de la souris sous la forme d'un tuple (x;y)
-        mouse_buttons = pygame.mouse.get_pressed()
-        for event in pygame.event.get(): #Vérifier chaque évenement "extérieur"
-            if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
-                running = False #Arrêter le Jeu
-        #board_0.destroyBoat((1,0))
-        ShowGlobalBoard(board_0, board_1)
+        if isfirst: #Si c'est le premier Tour
+            exit_signal = FirstPlayerTurn(board_0, board_1) #En cas d'interruption volontaire de la part de l'utilisateur
+            FirstcomputerTurn(board_1)
+        if isfirst == False:
+            exit_signal = PlayerAttack(board_0, board_1)
+            ComputerAttack(board_1, board_0)
+        isfirst = False #Puisque ce qui était à faitre seulement au premier tour est passé
+        if exit_signal == 2:
+            running = False
     pygame.quit()
-    print("gameLoop: Jeu fermé ")
-
-
+    print("GameLoop: Jeu fermé ")
 
 
 
 player_board = Board(5, "elouan", bottom)
 computer_board = Board(5, "computer", top)
-#player_board.showBoard()
-#player_board.makeLink([(0,0),(1,1),(3,4)])
-#player_board.placeBoat((0,2), 3)
-#player_board.placeBoat((1,0), 3)
-#player_board.placeBoat((0,2), 2)
-#player_board.placeBoat((0,1),1)
-#computer_board.placeBoat((0,2),1)
+"""
 for line in player_board.cells_list:
     print(line)
-gameLoop(player_board, computer_board)
+"""
+GameLoop(player_board, computer_board)
