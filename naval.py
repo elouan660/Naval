@@ -394,5 +394,5 @@ def GameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
 
 
 player_board = Board(5, os.getlogin(), bottom)
-computer_board = Board(5, "computer", top)
+computer_board = Board(5, "Ordinateur", top)
 GameLoop(player_board, computer_board)
