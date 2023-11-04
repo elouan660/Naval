@@ -55,7 +55,7 @@ class Board:
     #Les coordonnées des cellules seront données aux méthodes et fonctions sous la forme de tuple (x,y)
     def __init__(self, width, user, position):
         self.width = width #Largeur en case du plateau
-        self.life = 3 #Points de vie
+        self.life = 1 #Points de vie
         self.user = user 
         self.score = 0
         self.position = position #En haut ou en bas
@@ -71,7 +71,7 @@ class Board:
             self.boat_size = boat_size #taille du bateau présent sur la case racine, utile pour l'affichage graphique
             self.links = [] # Liste des liens avec d'autres cases (bateaux multi-cases)
         def __repr__(self): #retourner les coordonnées en cas de print
-            return f"({self.x};{self.y});{self.links}"
+            return f"({self.x};{self.y});{self.boat_state}"
         def getBoatState(self): # Obtenir l'état du bateau
             return self.boat_state
         def getCoord(self): # Obtenir les coordonées de la case
@@ -139,16 +139,27 @@ class Board:
     def destroyBoat(self, selected_cell):
         try:
             cells_to_destroy = []
+            size_of_boat = len(self.cells_list[selected_cell[1]][selected_cell[0]].links)
             score = 0 #score gagné par l'adversaire lors de cette attaque
-            if len(self.cells_list[selected_cell[1]][selected_cell[0]].links) != 0 or self.cells_list[selected_cell[1]][selected_cell[0]].boat_state == 1: #si un bateau se trouve sur cette case
+            if size_of_boat != 0 or self.cells_list[selected_cell[1]][selected_cell[0]].boat_state == 1: #si un bateau se trouve sur cette case
+                if self.cells_list[selected_cell[1]][selected_cell[0]].boat_state != 2: #Si le bateau n'a pas déjà été détruit
+                    self.life -= 1 #Se retirer une vie
+                    if size_of_boat == 0:
+                        score += 1
+                        self.score -= 1
+                    elif size_of_boat == 1:
+                        score += 2
+                        self.score -= 2
+                    elif size_of_boat == 2:
+                        score += 3
+                        self.score -=3
                 cells_to_destroy.append(selected_cell)
                 for cell in self.cells_list[selected_cell[1]][selected_cell[0]].links:
                     cells_to_destroy.append(cell)
-            print(cells_to_destroy)
+            #print(cells_to_destroy)
             for cell in cells_to_destroy:
                 self.cells_list[cell[1]][cell[0]].boat_state = 2
-            self.life -= 1
-            return  #indique que tout s'est bien passé
+            return score  #indique que tout s'est bien passé
         except IndexError:
             return -1 #Indique qu'une erreur a empêché le bon fonctionnement de la méthode
         
@@ -205,6 +216,40 @@ class Board:
         screen.blit(self.board_background, (0, self.position)) #Afficher le plateau en haut ou en bas
 
 
+def DisplayInformations(board):
+     #Affichage des informations joueur
+    diplayed_player = bitstream.render(board.user, True, (0,0,0), "white")
+    center_player = diplayed_player.get_rect()
+    center_player.center = (width-150, (board.position)+12)
+    screen.blit(diplayed_player, center_player)
+      #Score
+    player_score = bitstream.render(f"score: {board.score}", True, (0,0,0))
+    player_score_rect = player_score.get_rect()
+    player_score_rect.x = (width-300)+50
+    player_score_rect.y = board.position+50
+    screen.blit(player_score, player_score_rect)
+      #vies
+    player_life = bitstream.render(f"vies: {board.life}", True, (0,0,0))
+    player_life_rect = player_life.get_rect()
+    player_life_rect.x = (width-300)+50
+    player_life_rect.y = board.position+70
+    screen.blit(player_life, player_life_rect)    
+
+def DisplayFinal(winner, loser):
+    #Créer un rectangle blanc centré
+    pygame.draw.rect(screen, (255,255,255), pygame.Rect((width//2)-150,(height//2)-150, 300, 300))
+    #Afficher le gagnant en haut de ce rectangle
+    display_winner = bitstream.render(f"Gagnant: {winner.user}", True, (0,0,0))
+    display_winner_rect = display_winner.get_rect()
+    display_winner_rect.center = ((width//2),(height//2)-130)
+    screen.blit(display_winner, display_winner_rect)
+
+    winner_score = bitstream.render(f"score: {winner.life}", True, (0,0,0))
+    winner_score_rect = winner_score.get_rect()
+    winner_score_rect.x = (width//2)-130
+    winner_score_rect.y = (height//2)-120
+    screen.blit(winner_score, winner_score_rect) 
+
 #Afficher le plateau en globalité
 def ShowGlobalBoard(board_0, board_1, phase, user, pos="center"):
     board_0.graphShowBoard()
@@ -217,49 +262,8 @@ def ShowGlobalBoard(board_0, board_1, phase, user, pos="center"):
     center_phase.center = ((width-300)//2, height//2) #centrer le texte entre les deux plateaux
     screen.blit(diplayed_phase, center_phase)
 
-    if user == os.getlogin():
-        playercolor = (0,0,255)
-        computercolor = (0,0,0)
-    else:
-        playercolor = (0,0,0)
-        computercolor = (0,0,255)
-
-     #Affichage des informations joueur
-    diplayed_player = bitstream.render(os.getlogin(), True, playercolor, "white")
-    center_player = diplayed_player.get_rect()
-    center_player.center = (width-150, (height//2)+12)
-    screen.blit(diplayed_player, center_player)
-      #Score
-    player_score = bitstream.render(f"score: {board_0.score}", True, (0,0,0))
-    player_score_rect = player_score.get_rect()
-    player_score_rect.x = (width-300)+50
-    player_score_rect.y = (height//2)+50
-    screen.blit(player_score, player_score_rect)
-      #vies
-    player_life = bitstream.render(f"vies: {board_0.life}", True, (0,0,0))
-    player_life_rect = player_life.get_rect()
-    player_life_rect.x = (width-300)+50
-    player_life_rect.y = (height//2)+65
-    screen.blit(player_life, player_life_rect)
-
-     #Affichage des informations ordinateur
-    diplayed_computer = bitstream.render("Ordinateur", True, computercolor, "white")
-    center_computer = diplayed_computer.get_rect()
-    center_computer.center = (width-150, 10)
-    screen.blit(diplayed_computer, center_computer)
-      #Score
-    computer_score = bitstream.render(f"score: {board_0.score}", True, (0,0,0))
-    computer_score_rect = computer_score.get_rect()
-    computer_score_rect.x = (width-300)+50
-    computer_score_rect.y = 50
-    screen.blit(computer_score, computer_score_rect)
-      #vies
-    computer_life = bitstream.render(f"vies: {board_0.life}", True, (0,0,0))
-    computer_life_rect = computer_life.get_rect()
-    computer_life_rect.x = (width-300)+50
-    computer_life_rect.y = 65
-    screen.blit(computer_life, computer_life_rect)
-    
+    DisplayInformations(board_0)
+    DisplayInformations(board_1)
 
     #Rafraichir l'écran
     clock.tick(20)
@@ -280,12 +284,12 @@ def FirstPlayerTurn(myboard, otherboard):
         mouse_position = pygame.mouse.get_pos()
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            print("detected")
+            #print("detected")
             selected_case = myboard.detectCellWithCos(mouse_position) #Convertir les coordonnées de la souris en case
-            print(selected_case)
+            #print(selected_case)
             if myboard.placeBoat(selected_case, selected) == 1:
                 selected += 1
-                print(selected)
+                #print(selected)
     return exit_signal
 
 #Permettre à l'utilisateur d'attaquer l'adversaire
@@ -302,15 +306,20 @@ def PlayerAttack(myboard, otherboard):
         mouse_position = pygame.mouse.get_pos()
         mouse_buttons = pygame.mouse.get_pressed()
         if mouse_buttons[0]:
-            print("detected")
+            #print("detected")
             selected_case = otherboard.detectCellWithCos(mouse_position) #Convertir les coordonnées de la souris en case
-            print(selected_case)
-            if otherboard.destroyBoat(selected_case) != -1: #Si le bateau a bien pu être détruit
+            #print(selected_case)
+            score = otherboard.destroyBoat(selected_case)
+            #print(score)
+            if score != -1: #Si le bateau a bien pu être détruit
+                myboard.score += score
                 selected = 1
     return exit_signal
 
 def ComputerAttack(itsboard, otherboard):
-    otherboard.destroyBoat((random.randrange(0, 4, 1), random.randrange(0, 4, 1)))
+    score = otherboard.destroyBoat((random.randrange(0, 4, 1), random.randrange(0, 4, 1)))
+    itsboard.score += score
+
 
 
 def FirstcomputerTurn(itsboard):
@@ -333,18 +342,41 @@ def GameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
         if isfirst == False:
             exit_signal = PlayerAttack(board_0, board_1)
             ComputerAttack(board_1, board_0)
+            for line in board_1.cells_list:
+                print(line)
+            print("\n")
+        changeTurn = False
+        #if board_0 
         isfirst = False #Puisque ce qui était à faitre seulement au premier tour est passé
         if exit_signal == 2:
+            running = False
+        while changeTurn == False:
+            ShowGlobalBoard(board_0, board_1, "Appuyez sur espace pour continuer", board_0.user)
+            for event in pygame.event.get(): #Vérifier chaque évenement "extérieur", indispensable pour l'interactivité souris
+                if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
+                    #running = False
+                    changeTurn = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        changeTurn = True
+        if board_0.life == 0 or board_1.life == 0:
+            DisplayFinal(board_0, None)
+            quit_game = False
+            while quit_game == False:
+                clock.tick(20)
+                pygame.display.update()
+                for event in pygame.event.get(): #Vérifier chaque évenement "extérieur", indispensable pour l'interactivité souris
+                    if event.type == pygame.QUIT: #Si le joueur veut quitter le jeu (il clique la croix de la fenêtre)
+                        quit_game = True
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            quit_game = True
             running = False
     pygame.quit()
     print("GameLoop: Jeu fermé ")
 
 
 
-player_board = Board(5, "elouan", bottom)
+player_board = Board(5, os.getlogin(), bottom)
 computer_board = Board(5, "computer", top)
-"""
-for line in player_board.cells_list:
-    print(line)
-"""
 GameLoop(player_board, computer_board)
