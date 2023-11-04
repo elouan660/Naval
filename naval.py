@@ -55,7 +55,7 @@ class Board:
     #Les coordonnées des cellules seront données aux méthodes et fonctions sous la forme de tuple (x,y)
     def __init__(self, width, user, position):
         self.width = width #Largeur en case du plateau
-        self.life = 1 #Points de vie
+        self.life = 3 #Points de vie
         self.user = user 
         self.score = 0
         self.position = position #En haut ou en bas
@@ -244,11 +244,23 @@ def DisplayFinal(winner, loser):
     display_winner_rect.center = ((width//2),(height//2)-130)
     screen.blit(display_winner, display_winner_rect)
 
-    winner_score = bitstream.render(f"score: {winner.life}", True, (0,0,0))
+    winner_score = bitstream.render(f"score: {winner.score}", True, (0,0,0))
     winner_score_rect = winner_score.get_rect()
     winner_score_rect.x = (width//2)-130
-    winner_score_rect.y = (height//2)-120
+    winner_score_rect.y = (height//2)-110
     screen.blit(winner_score, winner_score_rect) 
+
+    display_loser = bitstream.render(f"Perdant: {loser.user}", True, (0,0,0))
+    display_loser_rect = display_loser.get_rect()
+    display_loser_rect.center = ((width//2),(height//2)+20)
+    screen.blit(display_loser, display_loser_rect)
+
+    loser_score = bitstream.render(f"score: {loser.score}", True, (0,0,0))
+    loser_score_rect = loser_score.get_rect()
+    loser_score_rect.x = (width//2)-130
+    loser_score_rect.y = (height//2)+40
+    screen.blit(loser_score, loser_score_rect) 
+    
 
 #Afficher le plateau en globalité
 def ShowGlobalBoard(board_0, board_1, phase, user, pos="center"):
@@ -317,8 +329,9 @@ def PlayerAttack(myboard, otherboard):
     return exit_signal
 
 def ComputerAttack(itsboard, otherboard):
-    score = otherboard.destroyBoat((random.randrange(0, 4, 1), random.randrange(0, 4, 1)))
-    itsboard.score += score
+    if itsboard.life != 0: #Pour eviter qu'il n'attaque après sa mort
+        score = otherboard.destroyBoat((random.randrange(0, 4, 1), random.randrange(0, 4, 1)))
+        itsboard.score += score
 
 
 
@@ -360,7 +373,10 @@ def GameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
                     if event.key == pygame.K_SPACE:
                         changeTurn = True
         if board_0.life == 0 or board_1.life == 0:
-            DisplayFinal(board_0, None)
+            if board_0.life > board_1.life:
+                DisplayFinal(board_0, board_1)
+            else:
+                DisplayFinal(board_1, board_0)
             quit_game = False
             while quit_game == False:
                 clock.tick(20)
