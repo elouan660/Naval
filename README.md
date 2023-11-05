@@ -1,5 +1,8 @@
 # Naval
-Jeu de bataille Navale créé dans le cadre d'un projet de NSI en terminale
+Jeu de bataille Navale créé dans le cadre d'un projet de NSI en terminale \
+**Modifications par rapport au cahier des charges initial:**
+- Le score n'augmente pas lorsqu'on tire à coté d'un bateau, cela parce que les parties s'en trouvaient trop raccourcies et facilitées
+- Le score n'est pas stocké dans sa propre classe, parce qu'il fut constaté que c'était inutile
 
 ## Mode d'emploi
 Ce jeu ce jeu seul contre l'ordinateur \
