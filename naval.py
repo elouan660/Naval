@@ -2,7 +2,6 @@
 # Licence (licence.txt) normalement jointe à ce fichier, sinon consultez la à https://www.gnu.org/licenses/gpl-3.0.html
 # Projet scolaire de bataille navale NSI TG1 2023-2024 Livet
 # Code anglophone, variable et attributs en minuscules, classes et fonctions en CamelCase, méthodes en lowerCamelCase
-# Todo: Penser à inclure des piles et des files
 
 import random as random
 import os as os
