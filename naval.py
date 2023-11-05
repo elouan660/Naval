@@ -360,7 +360,7 @@ def GameLoop(board_0, board_1): #board_0: joueur, board_1: Ordinateur
             print("\n")
         changeTurn = False
         #if board_0 
-        isfirst = False #Puisque ce qui était à faitre seulement au premier tour est passé
+        isfirst = False #Puisque ce qui était à faire seulement au premier tour est passé
         if exit_signal == 2:
             running = False
         while changeTurn == False:
